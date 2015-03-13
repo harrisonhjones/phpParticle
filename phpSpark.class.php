@@ -63,6 +63,19 @@ class phpSpark
             return true;
         }
     }
+    public function setDisableSSL($_disableSSL = false)
+    {
+        if($_disableSSL)
+        {
+            $this->_disableSSL = true;
+            return true;
+        }
+        else
+        {
+            $this->_disableSSL = false;
+            return true;
+        }
+    }
     private function _setError($errorText, $errorSource)
     {
         $this->_error = $errorText;
