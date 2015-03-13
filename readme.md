@@ -12,7 +12,7 @@ PHP Class for interacting with the Spark Cloud (spark.io)
 - (Optional) Run the example file `phpSpark.examples.php`
 
 ## Usage
-See `phpSpark.example.php`
+See `phpSpark.examples.php`
 
 ## Implemented Features
 
