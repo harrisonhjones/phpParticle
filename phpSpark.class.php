@@ -63,9 +63,9 @@ class phpSpark
             return true;
         }
     }
-    public function setDisableSSL($_disableSSL = false)
+    public function setDisableSSL($disableSSL = false)
     {
-        if($_disableSSL)
+        if($disableSSL)
         {
             $this->_disableSSL = true;
             return true;
