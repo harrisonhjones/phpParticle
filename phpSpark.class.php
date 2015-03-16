@@ -151,7 +151,7 @@ class phpSpark
     {
         if($this->_accessToken)
         {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction ;
+            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction."?access_token=".$this->_accessToken;
             $result =  $this->_curlRequest($url, $params, 'post');
 
             $retVal = json_decode($result,true);
@@ -188,7 +188,7 @@ class phpSpark
     {
         if($this->_accessToken)
         {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $variableName ;
+            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $variableName."?access_token=".$this->_accessToken;
             $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
@@ -225,7 +225,7 @@ class phpSpark
     {
         if($this->_accessToken)
         {
-            $url = $this->_endpoint .'v1/devices/';
+            $url = $this->_endpoint .'v1/devices/'."?access_token=".$this->_accessToken;
             $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
@@ -262,7 +262,7 @@ class phpSpark
     {
         if($this->_accessToken)
         {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID;
+            $url = $this->_endpoint .'v1/devices/' . $deviceID."?access_token=".$this->_accessToken;
             $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
@@ -299,7 +299,7 @@ class phpSpark
     {
         if($this->_accessToken)
         {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID;
+            $url = $this->_endpoint .'v1/devices/' . $deviceID."?access_token=".$this->_accessToken;
             $result = $this->_curlRequest($url, array("name" => $name), 'put');
             $retVal = json_decode($result,true);
 
@@ -530,7 +530,7 @@ class phpSpark
         return $this->_result;
     }
 
-    private function _curlRequest($Url, $fields = null, $type = 'post', $authType = 'none', $username = '', $password = '')
+    private function _curlRequest($url, $fields = null, $type = 'post', $authType = 'none', $username = '', $password = '')
     {
         $this->_debug("Opening a {$type} connection to {$url}");
         $fields_string = null;
@@ -583,7 +583,7 @@ class phpSpark
 
         // Now set some options (most are optional)
         // Set URL to download
-        curl_setopt($ch, CURLOPT_URL, $Url);
+        curl_setopt($ch, CURLOPT_URL, $url);
         
         if($this->_disableSSL)
         {
