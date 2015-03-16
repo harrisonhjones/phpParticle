@@ -83,5 +83,18 @@ else
     $spark->debug("Error Source" . $spark->getErrorSource());
 }
 
+// List of Spark core tokens
+$spark->debug("Spark Tokens");
+$spark->setAuth($username, $password);
+if($spark->listTokens() == true)
+{
+    $spark->debug_r($spark->getResult());
+}
+else
+{
+    $spark->debug("Error: " . $spark->getError());
+    $spark->debug("Error Source" . $spark->getErrorSource());
+}
+
 // End Program
 ?>

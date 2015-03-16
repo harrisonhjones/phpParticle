@@ -10,4 +10,6 @@
 
 $accessToken = "ACCESS TOKEN GOES HERE";
 $deviceID = "DEVICE ID GOES HERE";
+$username = "SPARK USERNAME GOES HERE";
+$password = "SPARK PASSWORD GOES HERE";
 ?>
