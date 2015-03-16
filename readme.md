@@ -25,6 +25,8 @@ See `phpSpark.examples.php`
 - List your access tokens
 - Delete an access token
 - Use a local spark cloud
+- List Webhooks
+- Delete Webhook
 
 ## To Do
 

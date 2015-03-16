@@ -4,6 +4,7 @@
  * @project phpSpark
  * @file    phpSpark.class.php
  * @authors Harrison Jones (harrison@hhj.me)
+ *          Devin Pearson   (devin@blackhat.co.za)
  * @date    March 12, 2015
  * @brief   PHP Class for interacting with the Spark Cloud (spark.io)
  */
@@ -19,12 +20,12 @@ class phpSpark
     private $_errorSource = "None";
     private $_result = false;
     private $_debugType = "HTML";
-	private $_endpoint = "https://api.spark.io/";
-	
-	public function setEndpoint($endpoint)
-	{
-		$this->_endpoint = $endpoint;
-	}
+    private $_endpoint = "https://api.spark.io/";
+
+    public function setEndpoint($endpoint)
+    {
+            $this->_endpoint = $endpoint;
+    }
 	
     public function setAuth($email, $password)
     {
@@ -151,7 +152,7 @@ class phpSpark
         if($this->_accessToken)
         {
             $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction ;
-            $result =  $this->_curlPOST($url,$params);
+            $result =  $this->_curlRequest($url, $params, 'post');
 
             $retVal = json_decode($result,true);
 
@@ -188,7 +189,7 @@ class phpSpark
         if($this->_accessToken)
         {
             $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $variableName ;
-            $result = $this->_curlGET($url);
+            $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
             if($retVal != false)
@@ -225,7 +226,7 @@ class phpSpark
         if($this->_accessToken)
         {
             $url = $this->_endpoint .'v1/devices/';
-            $result = $this->_curlGET($url);
+            $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
             if($retVal != false)
@@ -262,7 +263,7 @@ class phpSpark
         if($this->_accessToken)
         {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
-            $result = $this->_curlGET($url);
+            $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
             if($retVal != false)
@@ -299,7 +300,7 @@ class phpSpark
         if($this->_accessToken)
         {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
-            $result = $this->_curlPUT($url,array("name" => $name));
+            $result = $this->_curlRequest($url, array("name" => $name), 'put');
             $retVal = json_decode($result,true);
 
             if($retVal != false)
@@ -474,6 +475,48 @@ class phpSpark
         }
     }
     
+    /**
+     * Delete webhooks from the spark cloud
+     * @return boolean
+     */
+    public function deleteWebhook($webhookID)
+    {
+        if($this->_accessToken)
+        {
+            $fields = array();
+            $url = $this->_endpoint ."v1/webhooks/{$webhookID}/?access_token=". $this->_accessToken;
+            $result = $this->_curlRequest($url, $fields, 'delete');
+            $retVal = json_decode($result,true);
+
+            if($retVal != false)
+            {
+                if(isset($retVal['error']) && $retVal['error'])
+                {
+                    $errorText = $retVal['error'];
+                    $this->_setError($errorText, __FUNCTION__);
+                    return false;
+                }
+                else
+                {
+                    $this->_result = $retVal;
+                    return true;
+                }
+            }
+            else
+            {
+                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+        }
+        else
+        {
+            $errorText = "No access token set";
+            $this->_setError($errorText, __FUNCTION__);
+            return false;
+        }
+    }
+    
     public function getError()
     {
         return $this->_error;
@@ -487,119 +530,10 @@ class phpSpark
         return $this->_result;
     }
 
-    private function _curlGET($url)
+    private function _curlRequest($Url, $fields = null, $type = 'post', $authType = 'none', $username = '', $password = '')
     {
-		if (!function_exists('curl_init'))
-        {
-            die('Sorry cURL is not installed!');
-        }
-        $this->_debug("Opening a GET connection to " . $url);
-        //open connection
-        $ch = curl_init();
-
-        $url = $url  . "?access_token=" . $this->_accessToken;
-
-        //set the url, number of POST vars, POST data
-        curl_setopt($ch,CURLOPT_URL, $url);
-        // Disable SSL verification
-        if($this->_disableSSL)
-        {
-            $this->_debug("[WARN] Disabling SSL Verification for CURL");
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        }
-		
-        // Will return the response, if false it print the response
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        //execute post
-        $this->_debug("Executing Curl Operation<br/>");
-        $result = curl_exec($ch);
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$this->_debug("Curl Response Code: '" .  $httpCode."'");
-        $this->_debug("Curl Result: '" .  $result);
-
-        //close connection
-        curl_close($ch);
-        return $result;
-
-    }
-    private function _curlPOST($url,$params)
-    {
-        $this->_debug("Opening a POST connection to " . $url);
-        $fields = array(
-            'access_token' => urlencode($this->_accessToken),
-            'args' => urlencode($params)
-        );
-
-        //url-ify the data for the POST
-        $fields_string = "";
-        foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-        $fields_string = rtrim($fields_string, '&');
-
-        //open connection
-        $ch = curl_init();
-
-        //set the url, number of POST vars, POST data
-        curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch,CURLOPT_POST, count($fields));
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-        // Disable SSL verification
-        if($this->disableSSL)
-        {
-            $this->_debug("[WARN] Disabling SSL Verification for CURL");
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        }
-        // Will return the response, if false it print the response
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        //execute post
-        $this->_debug("Executing Curl Operation");
-        $result = curl_exec($ch);
-
-        $this->_debug("Curl Result: '" .  $result);
-
-        //close connection
-        curl_close($ch);
-        return $result;
-    }
-
-    private function _curlPUT($url,$params)
-    {
-        $this->_debug("Opening a PUT connection to " . $url);
-
-        $params['access_token'] = $this->_accessToken;
-        $this->_debug_r(http_build_query($params));
-
-        //open connection
-        $ch = curl_init();
-
-        //set the url, number of POST vars, POST data
-        curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch,CURLOPT_CUSTOMREQUEST, "PUT");
-        curl_setopt($ch,CURLOPT_POSTFIELDS, http_build_query($params));
-        // Disable SSL verification
-        if($this->disableSSL)
-        {
-            $this->_debug("[WARN] Disabling SSL Verification for CURL");
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        }
-        // Will return the response, if false it print the response
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        //execute post
-        $this->_debug("Executing Curl Operation");
-        $result = curl_exec($ch);
-
-        $this->_debug("Curl Result: '" .  $result);
-
-        //close connection
-        curl_close($ch);
-        return $result;
-    }
-	
-	private function _curlRequest($Url, $fields = null, $type = 'post', $authType = 'none', $username = '', $password = '')
-    {
-		$fields_string = null;
+        $this->_debug("Opening a {$type} connection to {$url}");
+        $fields_string = null;
         // is cURL installed yet?
         if (!function_exists('curl_init'))
         {
@@ -633,23 +567,31 @@ class phpSpark
                 
             }
             rtrim($fields_string,'&');
+            $this->_debug_r($fields_string);
             //set the number of POST vars, POST data
             if ($type == 'post') {
-            curl_setopt($ch,CURLOPT_POST,1);
-            curl_setopt($ch,CURLOPT_POSTFIELDS,$fields_string);
+                curl_setopt($ch,CURLOPT_POST,1);
+                curl_setopt($ch,CURLOPT_POSTFIELDS,$fields_string);
             }
         }
         if ($type == 'delete') {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        }
+        if ($type == 'put') {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         }
 
         // Now set some options (most are optional)
         // Set URL to download
         curl_setopt($ch, CURLOPT_URL, $Url);
         
-        // stop the verification of certificate
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-
+        if($this->_disableSSL)
+        {
+            // stop the verification of certificate
+            $this->_debug("[WARN] Disabling SSL Verification for CURL");
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
+        
         // Set a referer
         curl_setopt($ch, CURLOPT_REFERER, "http://www.example.com/curl.htm");
 
@@ -672,9 +614,13 @@ class phpSpark
         }
         
         // Download the given URL, and return output
+        $this->_debug("Executing Curl Operation");
         $output = curl_exec($ch);
+        
+        $this->_debug("Curl Result: '" .  $output);
+        
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        //var_dump($httpCode);
+        $this->_debug("Curl Response Code: '" .  $httpCode."'");
         // Close the cURL resource, and free system resources
         curl_close($ch);
 
