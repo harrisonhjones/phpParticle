@@ -85,7 +85,8 @@ else
 
 // List of Spark core tokens
 $spark->debug("Spark Tokens");
-if($spark->listTokens($username,$password) == true)
+$spark->setAuth($username, $password);
+if($spark->listTokens() == true)
 {
     $spark->debug_r($spark->getResult());
 }

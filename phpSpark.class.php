@@ -336,11 +336,11 @@ class phpSpark
      * Gets a list of your tokens from the spark cloud
      * @return boolean
      */
-    public function listTokens($username, $password)
+    public function listTokens()
     {
         $fields = array();
         $url = $this->_endpoint .'v1/access_tokens';
-        $result = $this->_curlRequest($url, $fields, 'get', 'basic', $username, $password);
+        $result = $this->_curlRequest($url, $fields, 'get', 'basic', $this->_email, $this->_password);
         $retVal = json_decode($result,true);
 
         if($retVal != false)
@@ -369,10 +369,10 @@ class phpSpark
      * Creates a new token on the spark cloud
      * @return boolean
      */
-    public function createToken($username, $password)
+    public function getToken()
     {
         // create token
-        $fields = array('grant_type' => 'password', 'username' => $username, 'password' => $password);
+        $fields = array('grant_type' => 'password', 'username' => $this->_email, 'password' => $this->_password);
         $url = $this->_endpoint .'oauth/token';
         $result = $this->_curlRequest($url, $fields, 'post', 'basic', 'spark', 'spark');
         $retVal = json_decode($result,true);
@@ -403,10 +403,10 @@ class phpSpark
      * Removes the token from the spark cloud
      * @return boolean
      */
-    public function deleteToken($username, $password, $token)
+    public function deleteToken($token)
     {
         // delete token
-        $fields = array('grant_type' => 'password', 'username' => $username, 'password' => $password);
+        $fields = array('grant_type' => 'password', 'username' => $this->_email, 'password' => $this->_password);
         $url = $this->_endpoint .'v1/access_tokens/'.$token;
         $result = $this->_curlRequest($url, $fields, 'delete', 'basic', $username, $password);
         $retVal = json_decode($result,true);
