@@ -21,10 +21,11 @@ See `phpSpark.examples.php`
 - Rename/Set device name
 - Call Spark Function on a device
 - Grab the value of a Spark Variable from a device
+- Generate a new access token
+- List your access tokens
+- Delete an access token
+- Use a local spark cloud
 
 ## To Do
 
 - Allow for remote firmware uploads
-- Generate a new access token
-- List your access tokens
-- Delete an access token
