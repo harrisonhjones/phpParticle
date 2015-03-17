@@ -23,7 +23,7 @@ $spark->setDebug(true);
 $spark->setDebugType("HTML");
 
 // Set the timeout to be pretty short (in case your core is offline)
-$spark->setTimeout("1");
+$spark->setTimeout("5");
 
 // Set our access token (set in the phpConfig.config.php file)
 $spark->setAccessToken($accessToken);
