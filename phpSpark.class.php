@@ -237,19 +237,10 @@ class phpSpark
      */
     public function listTokens()
     {
-        if(($this->_email) && ($this->_password))
-        {
             $url = $this->_endpoint .'v1/access_tokens';
             $result = $this->_curlRequest($url, array(), 'get', 'basic', $this->_email, $this->_password);
             
             return $result;
-        }
-        else
-        {
-            $errorText = "No auth credentials (email/password) set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
     }
     
     /**
@@ -258,20 +249,11 @@ class phpSpark
      */
     public function getToken($clientID = "user", $clientSecret = "client_secret_here")
     {
-        if(($this->_email) && ($this->_password))
-        {
-            $fields = array('grant_type' => 'password', 'client_id' => $clientID, 'client_secret' => $clientSecret, 'username' => $this->_email, 'password' => $this->_password);
-            $url = $this->_endpoint .'oauth/token';
-            $result = $this->_curlRequest($url, $fields, 'post', 'basic-dummy');
-            
-            return $result;
-        }
-        else
-        {
-            $errorText = "No auth credentials (email/password) set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+        $fields = array('grant_type' => 'password', 'client_id' => $clientID, 'client_secret' => $clientSecret, 'username' => $this->_email, 'password' => $this->_password);
+        $url = $this->_endpoint .'oauth/token';
+        $result = $this->_curlRequest($url, $fields, 'post', 'basic-dummy');
+
+        return $result;
     }
     
     /**
@@ -280,19 +262,10 @@ class phpSpark
      */
     public function deleteToken($token)
     {
-        if(($this->_email) && ($this->_password))
-        {
             $url = $this->_endpoint .'v1/access_tokens/'.$token;
             $result = $this->_curlRequest($url, array(), 'delete', 'basic');
             
             return $result;
-        }
-        else
-        {
-            $errorText = "No auth credentials (email/password) set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
     }
     /**
      * Gets a list of webhooks from the spark cloud
@@ -438,8 +411,18 @@ class phpSpark
         $this->debug("Auth Type: " . $authType);
         // basic auth
         if ($authType == 'basic') {
-            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_USERPWD, $this->_email . ":" . $this->_password);
+            if(($this->_email) && ($this->_password))
+            {
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_USERPWD, $this->_email . ":" . $this->_password);
+                }
+            else
+            {
+                list(, $caller) = debug_backtrace(false);
+                $errorText = "No auth credentials (email/password) set";
+                $this->_setError($errorText, $caller['function']);
+                return false;
+            }
         }
         if ($authType == 'basic-dummy') {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
