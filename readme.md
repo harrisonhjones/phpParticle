@@ -9,7 +9,7 @@ PHP Class for interacting with the Spark Cloud (spark.io)
 - Rename `phpSpark.config.sample.php` to `phpSpark.config.php`
 - Set your access token and device id in `phpSpark.config.php`
 - (Optional) Copy and paste the code in `spark.firmware.cpp` into a new app in the Spark WebIDE & flash it to your core
-- (Optional) Run the example file `phpSpark.examples.php`
+- (Optional) Run the any of the examples in the `examples` folder
 
 ## Usage
 See `phpSpark.examples.php`
