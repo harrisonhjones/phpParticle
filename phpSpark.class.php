@@ -151,8 +151,8 @@ class phpSpark
     {
         if($this->_accessToken)
         {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction."?access_token=".$this->_accessToken;
-            $result =  $this->_curlRequest($url, $params, 'post');
+            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction;
+            $result =  $this->_curlRequest($url, array('args'=>$params), 'post');
 
             $retVal = json_decode($result,true);
 
@@ -188,7 +188,7 @@ class phpSpark
     {
         if($this->_accessToken)
         {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $variableName."?access_token=".$this->_accessToken;
+            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $variableName;
             $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
@@ -225,7 +225,7 @@ class phpSpark
     {
         if($this->_accessToken)
         {
-            $url = $this->_endpoint .'v1/devices/'."?access_token=".$this->_accessToken;
+            $url = $this->_endpoint .'v1/devices/';
             $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
@@ -262,7 +262,7 @@ class phpSpark
     {
         if($this->_accessToken)
         {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID."?access_token=".$this->_accessToken;
+            $url = $this->_endpoint .'v1/devices/' . $deviceID;
             $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
@@ -299,7 +299,7 @@ class phpSpark
     {
         if($this->_accessToken)
         {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID."?access_token=".$this->_accessToken;
+            $url = $this->_endpoint .'v1/devices/' . $deviceID;
             $result = $this->_curlRequest($url, array("name" => $name), 'put');
             $retVal = json_decode($result,true);
 
@@ -338,28 +338,37 @@ class phpSpark
      */
     public function listTokens()
     {
-        $fields = array();
-        $url = $this->_endpoint .'v1/access_tokens';
-        $result = $this->_curlRequest($url, $fields, 'get', 'basic', $this->_email, $this->_password);
-        $retVal = json_decode($result,true);
-
-        if($retVal != false)
+        if(($this->_email) && ($this->_password))
         {
-            if(isset($retVal['error']) && $retVal['error'])
+            $fields = array();
+            $url = $this->_endpoint .'v1/access_tokens';
+            $result = $this->_curlRequest($url, $fields, 'get', 'basic', $this->_email, $this->_password);
+            $retVal = json_decode($result,true);
+
+            if($retVal != false)
             {
-                $errorText = $retVal['error'];
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
+                if(isset($retVal['error']) && $retVal['error'])
+                {
+                    $errorText = $retVal['error'];
+                    $this->_setError($errorText, __FUNCTION__);
+                    return false;
+                }
+                else
+                {
+                    $this->_result = $retVal;
+                    return true;
+                }
             }
             else
             {
-                $this->_result = $retVal;
-                return true;
+                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
             }
         }
         else
         {
-            $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+            $errorText = "No auth credentials (email/password) set";
             $this->_setError($errorText, __FUNCTION__);
             return false;
         }
@@ -371,29 +380,38 @@ class phpSpark
      */
     public function getToken()
     {
-        // create token
-        $fields = array('grant_type' => 'password', 'username' => $this->_email, 'password' => $this->_password);
-        $url = $this->_endpoint .'oauth/token';
-        $result = $this->_curlRequest($url, $fields, 'post', 'basic', 'spark', 'spark');
-        $retVal = json_decode($result,true);
-        
-        if($retVal != false)
+        if(($this->_email) && ($this->_password))
         {
-            if(isset($retVal['error']) && $retVal['error'])
+            // create token
+            $fields = array('grant_type' => 'password', 'username' => $this->_email, 'password' => $this->_password);
+            $url = $this->_endpoint .'oauth/token';
+            $result = $this->_curlRequest($url, $fields, 'post', 'basic', 'spark', 'spark');
+            $retVal = json_decode($result,true);
+            
+            if($retVal != false)
             {
-                $errorText = $retVal['error'];
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
+                if(isset($retVal['error']) && $retVal['error'])
+                {
+                    $errorText = $retVal['error'];
+                    $this->_setError($errorText, __FUNCTION__);
+                    return false;
+                }
+                else
+                {
+                    $this->_result = $retVal;
+                    return true;
+                }
             }
             else
             {
-                $this->_result = $retVal;
-                return true;
+                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
             }
         }
         else
         {
-            $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+            $errorText = "No auth credentials (email/password) set";
             $this->_setError($errorText, __FUNCTION__);
             return false;
         }
@@ -405,34 +423,42 @@ class phpSpark
      */
     public function deleteToken($token)
     {
-        // delete token
-        $fields = array('grant_type' => 'password', 'username' => $this->_email, 'password' => $this->_password);
-        $url = $this->_endpoint .'v1/access_tokens/'.$token;
-        $result = $this->_curlRequest($url, $fields, 'delete', 'basic', $username, $password);
-        $retVal = json_decode($result,true);
-        
-        if($retVal != false)
+        if(($this->_email) && ($this->_password))
         {
-            if(isset($retVal['error']) && $retVal['error'])
+            // delete token
+            $fields = array('grant_type' => 'password', 'username' => $this->_email, 'password' => $this->_password);
+            $url = $this->_endpoint .'v1/access_tokens/'.$token;
+            $result = $this->_curlRequest($url, $fields, 'delete', 'basic', $username, $password);
+            $retVal = json_decode($result,true);
+            
+            if($retVal != false)
             {
-                $errorText = $retVal['error'];
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
+                if(isset($retVal['error']) && $retVal['error'])
+                {
+                    $errorText = $retVal['error'];
+                    $this->_setError($errorText, __FUNCTION__);
+                    return false;
+                }
+                else
+                {
+                    $this->_result = $retVal;
+                    return true;
+                }
             }
             else
             {
-                $this->_result = $retVal;
-                return true;
+                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
             }
         }
         else
         {
-            $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+            $errorText = "No auth credentials (email/password) set";
             $this->_setError($errorText, __FUNCTION__);
             return false;
         }
     }
-    
     /**
      * Gets a list of webhooks from the spark cloud
      * @return boolean
@@ -442,7 +468,7 @@ class phpSpark
         if($this->_accessToken)
         {
             $fields = array();
-            $url = $this->_endpoint .'v1/webhooks?access_token='. $this->_accessToken;
+            $url = $this->_endpoint .'v1/webhooks?access_token=';
             $result = $this->_curlRequest($url, $fields, 'get');
             $retVal = json_decode($result,true);
 
@@ -484,7 +510,7 @@ class phpSpark
         if($this->_accessToken)
         {
             $fields = array();
-            $url = $this->_endpoint ."v1/webhooks/{$webhookID}/?access_token=". $this->_accessToken;
+            $url = $this->_endpoint ."v1/webhooks/{$webhookID}/";
             $result = $this->_curlRequest($url, $fields, 'delete');
             $retVal = json_decode($result,true);
 
@@ -530,55 +556,47 @@ class phpSpark
         return $this->_result;
     }
 
-    private function _curlRequest($url, $fields = null, $type = 'post', $authType = 'none', $username = '', $password = '')
+    private function _curlRequest($url, $params = null, $type = 'post', $authType = 'none')
     {
         $this->_debug("Opening a {$type} connection to {$url}");
         $fields_string = null;
+
+        if($authType == 'none')
+            $params['access_token'] = $this->_accessToken;
+
         // is cURL installed yet?
         if (!function_exists('curl_init'))
         {
-            die('Sorry cURL is not installed!');
+            die("CURL is not installed/available");
         }
 
         // OK cool - then let's create a new cURL resource handle
         $ch = curl_init();
-        if (!empty($fields))
+        //set the number of POST vars, POST data
+        if($type == 'get')
         {
-            //url-ify the data for the POST
-            foreach($fields as $key=>$value) 
-            { 
-                if (is_array($value))
-                {
-                    foreach($value as $value2)
-                    {
-                        if (!is_null($value2))
-			{
-			    $fields_string .= $key.'='.$value2.'&';
-			}
-                    }
-                } else
-                {
-                    if (!is_null($value))
-		    {
-			$fields_string .= $key.'='.$value.'&';
-		    }
-		    
-                }
-                
-            }
-            rtrim($fields_string,'&');
-            $this->_debug_r($fields_string);
-            //set the number of POST vars, POST data
-            if ($type == 'post') {
-                curl_setopt($ch,CURLOPT_POST,1);
-                curl_setopt($ch,CURLOPT_POSTFIELDS,$fields_string);
-            }
+            $url .= ("?" . http_build_query($params));
         }
-        if ($type == 'delete') {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        else if ($type == 'post') 
+        {
+            curl_setopt($ch,CURLOPT_POST,count($fields));
+            curl_setopt($ch,CURLOPT_POSTFIELDS,http_build_query($params));
         }
-        if ($type == 'put') {
+        else if($type == "put")
+        {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            curl_setopt($ch,CURLOPT_POSTFIELDS,http_build_query($params));
+        }
+        else if ($type == 'delete') 
+        {
+            $url .= ("?" . http_build_query($params));
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        } 
+        else 
+        {
+            $errorText = "Unsupported method type (" . $type . ")";
+            $this->_setError($errorText, __FUNCTION__);
+            return false;
         }
 
         // Now set some options (most are optional)
@@ -593,10 +611,10 @@ class phpSpark
         }
         
         // Set a referer
-        curl_setopt($ch, CURLOPT_REFERER, "http://www.example.com/curl.htm");
+        // curl_setopt($ch, CURLOPT_REFERER, "http://www.example.com/curl.htm");
 
         // User agent
-        curl_setopt($ch, CURLOPT_USERAGENT, "MozillaXYZ/1.0");
+        // curl_setopt($ch, CURLOPT_USERAGENT, "MozillaXYZ/1.0");
 
         // Include header in result? (0 = yes, 1 = no)
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -610,11 +628,15 @@ class phpSpark
         // basic auth
         if ($authType == 'basic') {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
+            curl_setopt($ch, CURLOPT_USERPWD, $this->_email . ":" . $this->_password);
         }
         
         // Download the given URL, and return output
         $this->_debug("Executing Curl Operation");
+        $this->_debug("Url:");
+        $this->_debug_r($url);
+        $this->_debug("Params:");
+        $this->_debug_r($params);
         $output = curl_exec($ch);
         
         $this->_debug("Curl Result: '" .  $output);
