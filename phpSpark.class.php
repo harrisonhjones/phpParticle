@@ -392,7 +392,7 @@ class phpSpark
         }
         else if($type == "put-file")
         {
-            curl_setopt($request, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
             unset($params['access_token']);
             curl_setopt($ch,CURLOPT_POSTFIELDS,$params);
