@@ -8,6 +8,9 @@
  * @brief   Examples file. Flash the code in phpSpark.firmware.cpp to your Spark Core and try these functions out
  */
 
+// For testing purposes we want to be as strict as possible
+error_reporting(E_STRICT);
+
 // Include the required files. You will need to rename phpSpark.config.sample.php to phpSpark.config.php and then set the values within to use this example
 if((@include 'phpSpark.class.php') === false)  die("Unable to load phpSpark class");
 if((@include 'phpSpark.config.php') === false)  die("Unable to load phpSpark configuration file");
@@ -73,7 +76,7 @@ else
 
 // Rename your Spark Core
 $spark->debug("Spark Set Device Name");
-if($spark->setDeviceName($deviceID,"james") == true)
+if($spark->setDeviceName($deviceID,uniqid('phpSpark_')) == true)
 {
     $spark->debug_r($spark->getResult());
 }
