@@ -8,7 +8,7 @@
  */
 
 // For testing purposes we want to be as strict as possible
-// error_reporting(E_STRICT);
+error_reporting(E_STRICT);
 
 // Include the required files. You will need to rename phpSpark.config.sample.php to phpSpark.config.php and then set the values within to use this example
 if((@include '../phpSpark.class.php') === false)  die("Unable to load phpSpark class");

@@ -27,7 +27,6 @@ $spark->setAccessToken($accessToken);
 
 // List of Spark core tokens
 $spark->debug("Spark Web Hooks");
-$spark->setAuth($username, $password);
 if($spark->listWebhooks() == true)
 {
     $spark->debug_r($spark->getResult());

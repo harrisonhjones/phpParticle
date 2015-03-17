@@ -22,10 +22,7 @@ $spark->setDebug(true);
 // Set the debug calls to display pretty HTML format. Other option is "TEXT". Note, calls made to $spark->debug(...) display as set here
 $spark->setDebugType("HTML");
 
-// Set our access token (set in the phpConfig.config.php file)
-// $spark->setAccessToken($accessToken);
-
-// List of Spark core tokens
+// Delete a specific token
 $token = "EXAMPLE_TOKEN";
 $spark->debug("Delete Token " . $token);
 $spark->setAuth($username, $password);
