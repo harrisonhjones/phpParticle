@@ -452,13 +452,13 @@ class phpSpark
      * Creates a new token on the spark cloud
      * @return boolean
      */
-    public function getToken($clientID = "phpSpark")
+    public function getToken($clientID = "user", $clientSecret = "client_secret_here")
     {
         if(($this->_email) && ($this->_password))
         {
             // create token
             // ,
-            $fields = array('grant_type' => 'password', 'client_id' => 'user', 'client_secret' => 'client_secret_here', 'username' => $this->_email, 'password' => $this->_password);
+            $fields = array('grant_type' => 'password', 'client_id' => $clientID, 'client_secret' => $clientSecret, 'username' => $this->_email, 'password' => $this->_password);
             $url = $this->_endpoint .'oauth/token';
             $result = $this->_curlRequest($url, $fields, 'post', 'basic-dummy');
             $retVal = json_decode($result,true);
