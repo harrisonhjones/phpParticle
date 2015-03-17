@@ -468,11 +468,11 @@ class phpSpark
         if($this->_accessToken)
         {
             $fields = array();
-            $url = $this->_endpoint .'v1/webhooks?access_token=';
+            $url = $this->_endpoint .'v1/webhooks';
             $result = $this->_curlRequest($url, $fields, 'get');
             $retVal = json_decode($result,true);
 
-            if($retVal != false)
+            if(json_last_error() == 0)
             {
                 if(isset($retVal['error']) && $retVal['error'])
                 {
@@ -639,7 +639,7 @@ class phpSpark
         $this->_debug_r($params);
         $output = curl_exec($ch);
         
-        $this->_debug("Curl Result: '" .  $output);
+        $this->_debug("Curl Result: '" .  $output . "'");
         
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $this->_debug("Curl Response Code: '" .  $httpCode."'");
