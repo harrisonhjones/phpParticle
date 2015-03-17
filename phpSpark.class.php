@@ -21,10 +21,26 @@ class phpSpark
     private $_result = false;
     private $_debugType = "HTML";
     private $_endpoint = "https://api.spark.io/";
+    private $_curlTimeout = 10;
 
     public function setEndpoint($endpoint)
     {
             $this->_endpoint = $endpoint;
+    }
+
+    public function setTimeout($timeout)
+    {
+        if(is_numeric($timeout))
+        {
+            $this->_curlTimeout = intval($timeout);
+            return true;
+        }
+        else
+        {
+            $errorText = "Non numeric timeout";
+            $this->_setError($errorText, __FUNCTION__);
+            return false;
+        }
     }
 	
     public function setAuth($email, $password)
@@ -154,9 +170,17 @@ class phpSpark
             $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction;
             $result =  $this->_curlRequest($url, array('args'=>$params), 'post');
 
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
             $retVal = json_decode($result,true);
 
-            if($retVal != false)
+            if(json_last_error() == 0)
             {
                 if(isset($retVal['error']) && $retVal['error'])
                 {
@@ -192,7 +216,17 @@ class phpSpark
             $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
-            if($retVal != false)
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
             {
                 if(isset($retVal['error']) && $retVal['error'])
                 {
@@ -229,7 +263,17 @@ class phpSpark
             $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
-            if($retVal != false)
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
             {
                 if(isset($retVal['error']) && $retVal['error'])
                 {
@@ -266,7 +310,17 @@ class phpSpark
             $result = $this->_curlRequest($url, array(), 'get');
             $retVal = json_decode($result,true);
 
-            if($retVal != false)
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
             {
                 if(isset($retVal['error']) && $retVal['error'])
                 {
@@ -303,7 +357,17 @@ class phpSpark
             $result = $this->_curlRequest($url, array("name" => $name), 'put');
             $retVal = json_decode($result,true);
 
-            if($retVal != false)
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
             {
                 if(isset($retVal['error']) && $retVal['error'])
                 {
@@ -345,7 +409,17 @@ class phpSpark
             $result = $this->_curlRequest($url, $fields, 'get', 'basic', $this->_email, $this->_password);
             $retVal = json_decode($result,true);
 
-            if($retVal != false)
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
             {
                 if(isset($retVal['error']) && $retVal['error'])
                 {
@@ -389,7 +463,17 @@ class phpSpark
             $result = $this->_curlRequest($url, $fields, 'post', 'basic-dummy');
             $retVal = json_decode($result,true);
             
-            if($retVal != false)
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
             {
                 if(isset($retVal['error']) && $retVal['error'])
                 {
@@ -431,7 +515,17 @@ class phpSpark
             $result = $this->_curlRequest($url, $fields, 'delete', 'basic');
             $retVal = json_decode($result,true);
             
-            if($retVal != false)
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
             {
                 if(isset($retVal['error']) && $retVal['error'])
                 {
@@ -470,6 +564,16 @@ class phpSpark
             $fields = array();
             $url = $this->_endpoint .'v1/webhooks';
             $result = $this->_curlRequest($url, $fields, 'get');
+            $retVal = json_decode($result,true);
+
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
             $retVal = json_decode($result,true);
 
             if(json_last_error() == 0)
@@ -514,7 +618,17 @@ class phpSpark
             $result = $this->_curlRequest($url, $fields, 'delete');
             $retVal = json_decode($result,true);
 
-            if($retVal != false)
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
             {
                 if(isset($retVal['error']) && $retVal['error'])
                 {
@@ -623,7 +737,7 @@ class phpSpark
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         // Timeout in seconds
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->_curlTimeout);
         
         // basic auth
         if ($authType == 'basic') {
@@ -648,8 +762,17 @@ class phpSpark
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $this->_debug("Curl Response Code: '" .  $httpCode."'");
         // Close the cURL resource, and free system resources
-        curl_close($ch);
 
-        return $output;
+        $curlError = curl_errno($ch);
+        curl_close($ch);
+        if($curlError != CURLE_OK)
+        {
+            $this->_setError($curlError, __FUNCTION__);
+            return false;
+        }
+        else
+        {
+            return $output;
+        }
     }
 }

@@ -8,7 +8,7 @@
  */
 
 // For testing purposes we want to be as strict as possible
-error_reporting(E_STRICT);
+// error_reporting(E_STRICT);
 
 // Include the required files. You will need to rename phpSpark.config.sample.php to phpSpark.config.php and then set the values within to use this example
 if((@include '../phpSpark.class.php') === false)  die("Unable to load phpSpark class");
@@ -21,6 +21,9 @@ $spark = new phpSpark();
 $spark->setDebug(true);
 // Set the debug calls to display pretty HTML format. Other option is "TEXT". Note, calls made to $spark->debug(...) display as set here
 $spark->setDebugType("HTML");
+
+// Set the timeout to be pretty short (in case your core is offline)
+$spark->setTimeout("1");
 
 // Set our access token (set in the phpConfig.config.php file)
 $spark->setAccessToken($accessToken);
