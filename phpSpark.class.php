@@ -395,6 +395,53 @@ class phpSpark
             return false;
         }
     }
+
+    public function uploadFirmware($deviceID,$filename)
+    {
+        if($this->_accessToken)
+        {
+            $url = $this->_endpoint .'v1/devices/' . $deviceID;
+            $result = $this->_curlRequest($url, array("file" => '@' . realpath($filename)), 'put-file');
+            $retVal = json_decode($result,true);
+
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
+            {
+                if(isset($retVal['error']) && $retVal['error'])
+                {
+                    $errorText = $retVal['error'];
+                    $this->_setError($errorText, __FUNCTION__);
+                    return false;
+                }
+                else
+                {
+                    $this->_result = $retVal;
+                    return true;
+                }
+            }
+            else
+            {
+                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+        }
+        else
+        {
+            $errorText = "No access token set";
+            $this->_setError($errorText, __FUNCTION__);
+            return false;
+        }
+    }
     
     /**
      * Gets a list of your tokens from the spark cloud
@@ -672,7 +719,7 @@ class phpSpark
 
     private function _curlRequest($url, $params = null, $type = 'post', $authType = 'none')
     {
-        $this->_debug("Opening a {$type} connection to {$url}");
+        
         $fields_string = null;
 
         if($authType == 'none')
@@ -701,6 +748,14 @@ class phpSpark
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($ch,CURLOPT_POSTFIELDS,http_build_query($params));
         }
+        else if($type == "put-file")
+        {
+            curl_setopt($request, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            unset($params['access_token']);
+            curl_setopt($ch,CURLOPT_POSTFIELDS,$params);
+            $url .= "?access_token=" . $this->_accessToken;
+        }
         else if ($type == 'delete') 
         {
             $url .= ("?" . http_build_query($params));
@@ -713,8 +768,7 @@ class phpSpark
             return false;
         }
 
-        // Now set some options (most are optional)
-        // Set URL to download
+        $this->_debug("Opening a {$type} connection to {$url}");
         curl_setopt($ch, CURLOPT_URL, $url);
         
         if($this->_disableSSL)
@@ -739,6 +793,7 @@ class phpSpark
         // Timeout in seconds
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->_curlTimeout);
         
+        $this->debug("Auth Type: " . $authType);
         // basic auth
         if ($authType == 'basic') {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
