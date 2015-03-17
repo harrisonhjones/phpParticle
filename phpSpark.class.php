@@ -449,7 +449,8 @@ class phpSpark
         {
             list(, $caller) = debug_backtrace(false);
             //var_dump($caller['function']);
-            $this->_setError("Curl Error. Error number = {$curlError}. See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information", $caller['function']);
+            $errorText = $this->_curlErrorCode($curlError);
+            $this->_setError($errorText, $caller['function']);
             return false;
         }
         else
@@ -487,6 +488,19 @@ class phpSpark
                 return true;
             }
             return $output;
+        }
+    }
+    
+    private function _curlErrorCode($curlCode)
+    {
+        switch ($curlCode)
+        {
+            case 26:
+                return "Curl Error. There was a problem reading a local file or an error returned by the read callback.";
+            case 30:
+                return "Curl Error. Operation timeout. The specified time-out period was reached according to the conditions.";
+            default:
+                return "Curl Error. Error number = {$curlCode}. See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
         }
     }
 }
