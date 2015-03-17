@@ -378,14 +378,15 @@ class phpSpark
      * Creates a new token on the spark cloud
      * @return boolean
      */
-    public function getToken()
+    public function getToken($clientID = "phpSpark")
     {
         if(($this->_email) && ($this->_password))
         {
             // create token
-            $fields = array('grant_type' => 'password', 'username' => $this->_email, 'password' => $this->_password);
+            // ,
+            $fields = array('grant_type' => 'password', 'client_id' => 'user', 'client_secret' => 'client_secret_here', 'username' => $this->_email, 'password' => $this->_password);
             $url = $this->_endpoint .'oauth/token';
-            $result = $this->_curlRequest($url, $fields, 'post', 'basic', 'spark', 'spark');
+            $result = $this->_curlRequest($url, $fields, 'post', 'basic-dummy');
             $retVal = json_decode($result,true);
             
             if($retVal != false)
@@ -426,9 +427,8 @@ class phpSpark
         if(($this->_email) && ($this->_password))
         {
             // delete token
-            $fields = array('grant_type' => 'password', 'username' => $this->_email, 'password' => $this->_password);
             $url = $this->_endpoint .'v1/access_tokens/'.$token;
-            $result = $this->_curlRequest($url, $fields, 'delete', 'basic', $username, $password);
+            $result = $this->_curlRequest($url, $fields, 'delete', 'basic');
             $retVal = json_decode($result,true);
             
             if($retVal != false)
@@ -629,6 +629,10 @@ class phpSpark
         if ($authType == 'basic') {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $this->_email . ":" . $this->_password);
+        }
+        if ($authType == 'basic-dummy') {
+            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($ch, CURLOPT_USERPWD, "spark:spark");
         }
         
         // Download the given URL, and return output
