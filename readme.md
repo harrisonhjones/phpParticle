@@ -27,7 +27,4 @@ See `phpSpark.examples.php`
 - Use a local spark cloud
 - List Webhooks
 - Delete Webhook
-
-## To Do
-
-- Allow for remote firmware uploads
+- Remote (Over the Air) Firmware Uploads
