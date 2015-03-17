@@ -395,6 +395,101 @@ class phpSpark
             return false;
         }
     }
+    
+    public function getDevice($deviceID)
+    {
+        if($this->_accessToken)
+        {
+            $url = $this->_endpoint .'v1/devices';
+            $result = $this->_curlRequest($url, array('deviceid' => $deviceID), 'post');
+            $retVal = json_decode($result,true);
+
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
+            {
+                if(isset($retVal['error']) && $retVal['error'])
+                {
+                    $errorText = $retVal['error'];
+                    $this->_setError($errorText, __FUNCTION__);
+                    return false;
+                }
+                else
+                {
+                    $this->_result = $retVal;
+                    return true;
+                }
+            }
+            else
+            {
+                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+        }
+        else
+        {
+            $errorText = "No access token set";
+            $this->_setError($errorText, __FUNCTION__);
+            return false;
+        }
+    }
+
+     public function deleteDevice($deviceID)
+    {
+        if($this->_accessToken)
+        {
+            $fields = array();
+            $url = $this->_endpoint ."v1/webhooks/{$deviceID}/";
+            $result = $this->_curlRequest($url, $fields, 'delete');
+            $retVal = json_decode($result,true);
+
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
+            {
+                if(isset($retVal['error']) && $retVal['error'])
+                {
+                    $errorText = $retVal['error'];
+                    $this->_setError($errorText, __FUNCTION__);
+                    return false;
+                }
+                else
+                {
+                    $this->_result = $retVal;
+                    return true;
+                }
+            }
+            else
+            {
+                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+        }
+        else
+        {
+            $errorText = "No access token set";
+            $this->_setError($errorText, __FUNCTION__);
+            return false;
+        }
+    }
 
     public function uploadFirmware($deviceID,$filename)
     {
@@ -652,6 +747,60 @@ class phpSpark
         }
     }
     
+    /**
+     * Creates a new webhook on the spark cloud
+     * @param string $event
+     * @param string $url
+     * @param string $deviceID
+     * @return boolean
+     */
+    public function getWebhook($event, $url, $deviceID = NULL)
+    {
+        if($this->_accessToken)
+        {
+            $url = $this->_endpoint .'v1/webhooks/';
+            $result = $this->_curlRequest($url, array('event' => $event, 'url' => $url, 'deviceid' => $deviceID), 'post');
+            $retVal = json_decode($result,true);
+
+            if($result == false)
+            {
+                // There was a curl error. 
+                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+
+            $retVal = json_decode($result,true);
+
+            if(json_last_error() == 0)
+            {
+                if(isset($retVal['error']) && $retVal['error'])
+                {
+                    $errorText = $retVal['error'];
+                    $this->_setError($errorText, __FUNCTION__);
+                    return false;
+                }
+                else
+                {
+                    $this->_result = $retVal;
+                    return true;
+                }
+            }
+            else
+            {
+                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+        }
+        else
+        {
+            $errorText = "No access token set";
+            $this->_setError($errorText, __FUNCTION__);
+            return false;
+        }
+    }
+
     /**
      * Delete webhooks from the spark cloud
      * @return boolean
