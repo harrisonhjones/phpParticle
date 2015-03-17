@@ -26,7 +26,7 @@ $spark->setDebugType("HTML");
 // $spark->setAccessToken($accessToken);
 
 // List of Spark core tokens
-$token = "b4cb45578da8c6ef7132f447f44af5c44fe43f75";
+$token = "EXAMPLE_TOKEN";
 $spark->debug("Delete Token " . $token);
 $spark->setAuth($username, $password);
 if($spark->deleteToken($token) == true)
