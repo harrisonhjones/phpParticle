@@ -99,12 +99,17 @@ class phpSpark
             return true;
         }
     }
+    
     private function _setError($errorText, $errorSource)
     {
         $this->_error = $errorText;
         $this->_errorSource = $errorSource;
     }
-
+    
+    private function _setErrorSource($errorSource)
+    {
+        $this->_errorSource = $errorSource;
+    }
 
     private function _debug($debugText, $override = false)
     {
@@ -165,377 +170,65 @@ class phpSpark
     
     public function doFunction($deviceID, $deviceFunction, $params)
     {
-        if($this->_accessToken)
-        {
             $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction;
             $result =  $this->_curlRequest($url, array('args'=>$params), 'post');
-
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-        }
-        else
-        {
-            $errorText = "No access token set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+            
+            return $result;
     }
     public function getVariable($deviceID, $variableName)
     {
-        if($this->_accessToken)
-        {
             $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $variableName;
             $result = $this->_curlRequest($url, array(), 'get');
-            $retVal = json_decode($result,true);
-
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-        }
-        else
-        {
-            $errorText = "No access token set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+            
+            return $result;
     }
 
     public function listDevices()
     {
-        if($this->_accessToken)
-        {
             $url = $this->_endpoint .'v1/devices/';
             $result = $this->_curlRequest($url, array(), 'get');
-            $retVal = json_decode($result,true);
 
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-        }
-        else
-        {
-            $errorText = "No access token set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+            return $result;
     }
 
     public function getDeviceInfo($deviceID)
     {
-        if($this->_accessToken)
-        {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
             $result = $this->_curlRequest($url, array(), 'get');
-            $retVal = json_decode($result,true);
-
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-        }
-        else
-        {
-            $errorText = "No access token set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+            
+            return $result;
     }
 
     public function setDeviceName($deviceID,$name)
     {
-        if($this->_accessToken)
-        {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
             $result = $this->_curlRequest($url, array("name" => $name), 'put');
-            $retVal = json_decode($result,true);
-
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-        }
-        else
-        {
-            $errorText = "No access token set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+            
+            return $result;
     }
     
     public function getDevice($deviceID)
     {
-        if($this->_accessToken)
-        {
             $url = $this->_endpoint .'v1/devices';
             $result = $this->_curlRequest($url, array('deviceid' => $deviceID), 'post');
-            $retVal = json_decode($result,true);
-
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-        }
-        else
-        {
-            $errorText = "No access token set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+            
+            return $result;
     }
 
      public function deleteDevice($deviceID)
     {
-        if($this->_accessToken)
-        {
-            $fields = array();
             $url = $this->_endpoint ."v1/webhooks/{$deviceID}/";
-            $result = $this->_curlRequest($url, $fields, 'delete');
-            $retVal = json_decode($result,true);
-
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-        }
-        else
-        {
-            $errorText = "No access token set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+            $result = $this->_curlRequest($url, array(), 'delete');
+            
+            return $result;
     }
 
     public function uploadFirmware($deviceID,$filename)
     {
-        if($this->_accessToken)
-        {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
             $result = $this->_curlRequest($url, array("file" => '@' . realpath($filename)), 'put-file');
-            $retVal = json_decode($result,true);
-
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-        }
-        else
-        {
-            $errorText = "No access token set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+            
+            return $result;
     }
     
     /**
@@ -546,41 +239,10 @@ class phpSpark
     {
         if(($this->_email) && ($this->_password))
         {
-            $fields = array();
             $url = $this->_endpoint .'v1/access_tokens';
-            $result = $this->_curlRequest($url, $fields, 'get', 'basic', $this->_email, $this->_password);
-            $retVal = json_decode($result,true);
-
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
+            $result = $this->_curlRequest($url, array(), 'get', 'basic', $this->_email, $this->_password);
+            
+            return $result;
         }
         else
         {
@@ -598,43 +260,11 @@ class phpSpark
     {
         if(($this->_email) && ($this->_password))
         {
-            // create token
-            // ,
             $fields = array('grant_type' => 'password', 'client_id' => $clientID, 'client_secret' => $clientSecret, 'username' => $this->_email, 'password' => $this->_password);
             $url = $this->_endpoint .'oauth/token';
             $result = $this->_curlRequest($url, $fields, 'post', 'basic-dummy');
-            $retVal = json_decode($result,true);
             
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
+            return $result;
         }
         else
         {
@@ -652,41 +282,10 @@ class phpSpark
     {
         if(($this->_email) && ($this->_password))
         {
-            // delete token
             $url = $this->_endpoint .'v1/access_tokens/'.$token;
-            $result = $this->_curlRequest($url, $fields, 'delete', 'basic');
-            $retVal = json_decode($result,true);
+            $result = $this->_curlRequest($url, array(), 'delete', 'basic');
             
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
+            return $result;
         }
         else
         {
@@ -701,50 +300,11 @@ class phpSpark
      */
     public function listWebhooks()
     {
-        if($this->_accessToken)
-        {
             $fields = array();
             $url = $this->_endpoint .'v1/webhooks';
             $result = $this->_curlRequest($url, $fields, 'get');
-            $retVal = json_decode($result,true);
-
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-        }
-        else
-        {
-            $errorText = "No access token set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+            
+            return $result;
     }
     
     /**
@@ -756,49 +316,10 @@ class phpSpark
      */
     public function getWebhook($event, $url, $deviceID = NULL)
     {
-        if($this->_accessToken)
-        {
             $url = $this->_endpoint .'v1/webhooks/';
             $result = $this->_curlRequest($url, array('event' => $event, 'url' => $url, 'deviceid' => $deviceID), 'post');
-            $retVal = json_decode($result,true);
-
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-        }
-        else
-        {
-            $errorText = "No access token set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+            
+            return $result;
     }
 
     /**
@@ -807,50 +328,11 @@ class phpSpark
      */
     public function deleteWebhook($webhookID)
     {
-        if($this->_accessToken)
-        {
             $fields = array();
             $url = $this->_endpoint ."v1/webhooks/{$webhookID}/";
             $result = $this->_curlRequest($url, $fields, 'delete');
-            $retVal = json_decode($result,true);
-
-            if($result == false)
-            {
-                // There was a curl error. 
-                $errorText = "Curl Error. Error number = " . $this->_error . ". See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-
-            $retVal = json_decode($result,true);
-
-            if(json_last_error() == 0)
-            {
-                if(isset($retVal['error']) && $retVal['error'])
-                {
-                    $errorText = $retVal['error'];
-                    $this->_setError($errorText, __FUNCTION__);
-                    return false;
-                }
-                else
-                {
-                    $this->_result = $retVal;
-                    return true;
-                }
-            }
-            else
-            {
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-        }
-        else
-        {
-            $errorText = "No access token set";
-            $this->_setError($errorText, __FUNCTION__);
-            return false;
-        }
+            
+            return $result;
     }
     
     public function getError()
@@ -865,14 +347,25 @@ class phpSpark
     {
         return $this->_result;
     }
-
+    
     private function _curlRequest($url, $params = null, $type = 'post', $authType = 'none')
     {
         
         $fields_string = null;
 
         if($authType == 'none')
-            $params['access_token'] = $this->_accessToken;
+            if ($this->_accessToken)
+            {
+               $params['access_token'] = $this->_accessToken;
+            } 
+            else
+            {
+                $errorText = "No access token set";
+                list(, $caller) = debug_backtrace(false);
+                $this->_setError($errorText, $caller['function']);
+                return false;
+            }
+            
 
         // is cURL installed yet?
         if (!function_exists('curl_init'))
@@ -889,7 +382,7 @@ class phpSpark
         }
         else if ($type == 'post') 
         {
-            curl_setopt($ch,CURLOPT_POST,count($fields));
+            curl_setopt($ch,CURLOPT_POST,count($params));
             curl_setopt($ch,CURLOPT_POSTFIELDS,http_build_query($params));
         }
         else if($type == "put")
@@ -971,11 +464,45 @@ class phpSpark
         curl_close($ch);
         if($curlError != CURLE_OK)
         {
-            $this->_setError($curlError, __FUNCTION__);
+            list(, $caller) = debug_backtrace(false);
+            //var_dump($caller['function']);
+            $this->_setError("Curl Error. Error number = {$curlError}. See http://curl.haxx.se/libcurl/c/libcurl-errors.html for more information", $caller['function']);
             return false;
         }
         else
         {
+            if(isset($retVal['error']) && $retVal['error'])
+            {
+                $errorText = $retVal['error'];
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
+            else
+            {
+                $retVal = json_decode($output,true);
+
+                if(json_last_error() == 0)
+                {
+                    if(isset($retVal['error']) && $retVal['error'])
+                    {
+                        $errorText = $retVal['error'];
+                        $this->_setError($errorText, __FUNCTION__);
+                        return false;
+                    }
+                    else
+                    {
+                        return $this->_result = $retVal;
+                        //return true;
+                    }
+                }
+                else
+                {
+                    $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                    $this->_setError($errorText, __FUNCTION__);
+                    return false;
+                }
+                return true;
+            }
             return $output;
         }
     }
