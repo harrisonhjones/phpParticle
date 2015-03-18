@@ -223,10 +223,13 @@ class phpSpark
             return $result;
     }
 
-    public function uploadFirmware($deviceID,$filename)
+    public function uploadFirmware($deviceID,$filename,$isBinary=false)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
-            $result = $this->_curlRequest($url, array("file" => '@' . realpath($filename)), 'put-file');
+            $params = array("file" => '@' . realpath($filename));
+            if($isBinary == true) 
+                $params['file_type'] = "binary";
+            $result = $this->_curlRequest($url, $params, 'put-file');
             
             return $result;
     }
