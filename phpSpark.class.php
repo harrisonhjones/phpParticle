@@ -168,6 +168,13 @@ class phpSpark
         return $this->_debug_r($debugArray, $override = true);
     }
     
+    /**
+     * Runs a spark function on the device
+     * @param string $deviceID
+     * @param string $deviceFunction
+     * @param string $params
+     * @return boolean
+     */
     public function doFunction($deviceID, $deviceFunction, $params)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction;
@@ -175,6 +182,13 @@ class phpSpark
             
             return $result;
     }
+    
+    /**
+     * Gets the value of a spark variable
+     * @param string $deviceID
+     * @param string $variableName
+     * @return boolean
+     */
     public function getVariable($deviceID, $variableName)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $variableName;
@@ -182,7 +196,11 @@ class phpSpark
             
             return $result;
     }
-
+    
+    /**
+     * Lists all your cores assigned to your cloud account
+     * @return boolean
+     */
     public function listDevices()
     {
             $url = $this->_endpoint .'v1/devices/';
@@ -191,6 +209,11 @@ class phpSpark
             return $result;
     }
 
+    /**
+     * Gets your details from your core e.g. function and variables
+     * @param string $deviceID
+     * @return boolean
+     */
     public function getDeviceInfo($deviceID)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
@@ -198,7 +221,13 @@ class phpSpark
             
             return $result;
     }
-
+    
+    /**
+     * Set the name/renames your core
+     * @param string $deviceID
+     * @param string $name
+     * @return boolean
+     */
     public function setDeviceName($deviceID,$name)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
@@ -207,6 +236,11 @@ class phpSpark
             return $result;
     }
     
+    /**
+     * Addes the spark core to your cloud account
+     * @param string $deviceID
+     * @return boolean
+     */
     public function getDevice($deviceID)
     {
             $url = $this->_endpoint .'v1/devices';
@@ -214,15 +248,27 @@ class phpSpark
             
             return $result;
     }
-
-     public function deleteDevice($deviceID)
+    
+    /**
+     * Removes the core from your cloud account
+     * @param string $deviceID
+     * @return boolean
+     */
+    public function deleteDevice($deviceID)
     {
-            $url = $this->_endpoint ."v1/webhooks/{$deviceID}/";
+            $url = $this->_endpoint ."v1/devices/{$deviceID}/";
             $result = $this->_curlRequest($url, array(), 'delete');
             
             return $result;
     }
 
+    /**
+     * Uploads a sketch to the core
+     * @param string $deviceID
+     * @param string $filename
+     * @param boolean $isBinary
+     * @return boolean
+     */
     public function uploadFirmware($deviceID,$filename,$isBinary=false)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
@@ -248,6 +294,8 @@ class phpSpark
     
     /**
      * Creates a new token on the spark cloud
+     * @param string $clientID
+     * @param string $clientSecret
      * @return boolean
      */
     public function getToken($clientID = "user", $clientSecret = "client_secret_here")
@@ -261,6 +309,7 @@ class phpSpark
     
     /**
      * Removes the token from the spark cloud
+     * @param string $token
      * @return boolean
      */
     public function deleteToken($token)
