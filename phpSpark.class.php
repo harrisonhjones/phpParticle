@@ -460,7 +460,7 @@ class phpSpark
         // Timeout in seconds
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->_curlTimeout);
         
-        $this->debug("Auth Type: " . $authType);
+        $this->_debug("Auth Type: " . $authType);
         // basic auth
         if ($authType == 'basic') {
             if(($this->_email) && ($this->_password))
