@@ -361,7 +361,9 @@ class phpSpark
     }
     
     /**
-     * Delete webhooks from the spark cloud
+     * Sets the spark core signal mode state
+     * @param string $deviceID
+     * @param int $signalState
      * @return boolean
      */
     public function signalDevice($deviceID, $signalState = 0)
