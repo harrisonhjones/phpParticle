@@ -25,7 +25,7 @@ $spark->setDebugType("HTML");
 // Set our access token (set in the phpConfig.config.php file)
 $spark->setAccessToken($accessToken);
 
-$webhookID = '';
+$webhookID = '550de6ab239ed8a973c670ac';
 // Delete spark webhook
 $spark->debug("Delete Spark Web Hook");
 if($spark->deleteWebhook($webhookID) == true)

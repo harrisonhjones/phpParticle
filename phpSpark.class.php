@@ -23,11 +23,27 @@ class phpSpark
     private $_endpoint = "https://api.spark.io/";
     private $_curlTimeout = 10;
 
+    /**
+     * Sets the api endpoint used. Default is the spark.io api
+     *
+     * @param string $endpoint A url for the api you want to use (default: "https://api.spark.io/")
+     *
+     * @return void
+     *
+     */
     public function setEndpoint($endpoint)
     {
             $this->_endpoint = $endpoint;
     }
 
+    /**
+     * Sets the timeout used for calls against the api. 
+     *
+     * @param int $timeout The amount of time, in seconds, for a call to wait for data before returning with a TIMEOUT error
+     *
+     * @return void
+     *
+     */
     public function setTimeout($timeout)
     {
         if(is_numeric($timeout))
@@ -43,23 +59,64 @@ class phpSpark
         }
     }
 	
+    /**
+     * Sets the authentication details for authenticating with the API
+     *
+     * @param string $email The email to authenticate with
+     * @param string $password The password to authenticate with
+     *
+     * @return void
+     *
+     */
     public function setAuth($email, $password)
     {
         $this->_email = $email;
         $this->_password = $password;
     }
+
+    /**
+     * Clears all the authentication info (email and password). Internally set to false. Subsequent calls which require a email/password will fail
+     *
+     * @return void
+     *
+     */
     public function clearAuth()
     {
         $this->setAuth(false,false);
     }
+
+    /**
+     * Sets the access token for authenticating with the API
+     *
+     * @param string $accessToken The access token to authenticate with
+     *
+     * @return void
+     *
+     */
     public function setAccessToken($accessToken)
     {
         $this->_accessToken = $accessToken;
     }
+
+    /**
+     * Clears the accesss token info. Internally set to false. Subsequent calls which require an access token will fail
+     *
+     * @return void
+     *
+     */
     public function clearAccessToken()
     {
         $this->setAccessToken(false);
     }
+
+    /**
+     * Sets the debug type. Use "HTML" for errors automatically formatted for embedding into a webpage and "TEXT" for unformatted raw errors
+     *
+     * @param string $debugType The debug type (either "HTML" or "TEXT")
+     *
+     * @return void
+     *
+     */
     public function setDebugType($debugType = "HTML")
     {
         if(($debugType == "HTML") or ($debugType == "TEXT"))
@@ -73,6 +130,15 @@ class phpSpark
             return false;
         }
     }
+
+    /**
+     * Turn internal debugging on or off. Note, external calls made to debug ($obj->debug(...)) will always display regardless of this setting
+     *
+     * @param boolean $debug true turns on internal debugging & false turns off internal debugging
+     *
+     * @return void
+     *
+     */
     public function setDebug($debug = false)
     {
         if($debug)
@@ -86,6 +152,15 @@ class phpSpark
             return true;
         }
     }
+
+    /**
+     * Turn on or off SSL verification (it's a CURL thing). For testing, before you get the certificates setup, you might need to disable SSL verificatioon. Note this is a security concern
+     *
+     * @param boolean $disableSSL true allows you to communicate with api endpoints with invalid security certificates & false enforces SSL verification
+     *
+     * @return void
+     *
+     */
     public function setDisableSSL($disableSSL = false)
     {
         if($disableSSL)
@@ -100,17 +175,43 @@ class phpSpark
         }
     }
     
+    /**
+     * Private Function. Sets the internal _error & _errorSource variables. Allow for tracking which function resulted in an error and what that error was
+     *
+     * @param string $errorText The value to set _error to
+     * @param string $errorSource The value to set _errorSource to
+     *
+     * @return void
+     *
+     */
     private function _setError($errorText, $errorSource)
     {
         $this->_error = $errorText;
         $this->_errorSource = $errorSource;
     }
     
+    /**
+     * Private Function. Sets the internal _errorSource. Allow for tracking which function resulted in an error
+     *
+     * @param string $errorSource The value to set _errorSource to
+     *
+     * @return void
+     *
+     */
     private function _setErrorSource($errorSource)
     {
         $this->_errorSource = $errorSource;
     }
 
+    /**
+     * Private Function. Outputs the desired debug text formatted if required
+     *
+     * @param string $debugText The debug string to output
+     * @param string $override If set to true overrides the internal debug on/off state and always outputs the debugText. If set to false it follows the internal debug on/off state
+     *
+     * @return void
+     *
+     */
     private function _debug($debugText, $override = false)
     {
         if(($this->_debug == true) || ($override == true))
@@ -133,6 +234,15 @@ class phpSpark
         }
     }
 
+    /**
+     * Private Function. Outputs the desired debug array formatted if required
+     *
+     * @param mixed[] $debugArray The debug array to output
+     * @param string $override If set to true overrides the internal debug on/off state and always outputs the debugArray. If set to false it follows the internal debug on/off state
+     *
+     * @return void
+     *
+     */
     private function _debug_r($debugArray, $override = false)
     {
         if(($this->_debug == true) || ($override == true))
@@ -158,24 +268,42 @@ class phpSpark
         }
     }
 
+    /**
+     * Outputs the desired debug text formatted if required
+     *
+     * @param string $debugText The debug string to output
+     *
+     * @return void
+     *
+     */
     public function debug($debugText)
     {
         return $this->_debug($debugText, $override = true);
     }
 
+    /**
+     * Outputs the desired debug array formatted if required
+     *
+     * @param string $debugArray The debug array to output
+     *
+     * @return void
+     *
+     */
     public function debug_r($debugArray)
     {
         return $this->_debug_r($debugArray, $override = true);
     }
     
     /**
-     * Runs a spark function on the device
-     * @param string $deviceID
-     * @param string $deviceFunction
-     * @param string $params
-     * @return boolean
+     * Runs a spark function on the device. Requires the accessToken to be set
+     *
+     * @param string $deviceID The device ID of the device to call the function on
+     * @param string $deviceFunction The name function to call
+     * @param string $params The parameters to send to the function (the 'args')
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
-    public function doFunction($deviceID, $deviceFunction, $params)
+    public function callFunction($deviceID, $deviceFunction, $params)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction;
             $result =  $this->_curlRequest($url, array('args'=>$params), 'post');
@@ -184,10 +312,12 @@ class phpSpark
     }
     
     /**
-     * Gets the value of a spark variable
-     * @param string $deviceID
-     * @param string $variableName
-     * @return boolean
+     * Gets the value of a spark variable. Requires the accessToken to be set
+     * 
+     * @param string $deviceID The device ID of the device to call the function on
+     * @param string $variableName The name of the variable to retrieve
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
     public function getVariable($deviceID, $variableName)
     {
@@ -198,8 +328,9 @@ class phpSpark
     }
     
     /**
-     * Lists all your cores assigned to your cloud account
-     * @return boolean
+     * Lists all your cores assigned to your cloud account. Requires the accessToken to be set
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
     public function listDevices()
     {
@@ -210,9 +341,11 @@ class phpSpark
     }
 
     /**
-     * Gets your details from your core e.g. function and variables
-     * @param string $deviceID
-     * @return boolean
+     * Gets your details from your core e.g. function and variables. Requires the accessToken to be set
+     *
+     * @param string $deviceID The device ID of the device
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
     public function getDeviceInfo($deviceID)
     {
@@ -223,10 +356,12 @@ class phpSpark
     }
     
     /**
-     * Set the name/renames your core
-     * @param string $deviceID
-     * @param string $name
-     * @return boolean
+     * Set the name/renames your core. Requires the accessToken to be set
+     *
+     * @param string $deviceID The device ID of the device to rename
+     * @param string $name The new name of the device
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
     public function setDeviceName($deviceID,$name)
     {
@@ -237,22 +372,31 @@ class phpSpark
     }
     
     /**
-     * Addes the spark core to your cloud account
-     * @param string $deviceID
-     * @return boolean
+     * Attempts to add a device to your cloud account. Requires the accessToken to be set. Note, you may want to follow this up with a call to "setName" as new Core's names are blank. Interestingly, if claiming an order core their name is retained across the unclaim/claim process
+     *
+     * @param string $deviceID The device ID of the device to claim. 
+     * @param boolean $requestTransfer If true requests that the device be transfered to your account (use if the device is already claimed). If false will try to claim but not automatically send a transfer request
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
-    public function getDevice($deviceID)
+    public function claimDevice($deviceID, $requestTransfer = false)
     {
             $url = $this->_endpoint .'v1/devices';
-            $result = $this->_curlRequest($url, array('deviceid' => $deviceID), 'post');
+
+            if($requestTransfer)
+                $result = $this->_curlRequest($url, array('id' => $deviceID, 'request_transfer' => 'true'), 'post');
+            else
+                $result = $this->_curlRequest($url, array('id' => $deviceID, 'request_transfer' => 'false'), 'post');
             
             return $result;
     }
     
     /**
-     * Removes the core from your cloud account
-     * @param string $deviceID
-     * @return boolean
+     * Removes the core from your cloud account. Requires the accessToken to be set
+     *
+     * @param string $deviceID The device ID of the device to remove from your account. 
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
     public function deleteDevice($deviceID)
     {
@@ -263,16 +407,19 @@ class phpSpark
     }
 
     /**
-     * Uploads a sketch to the core
-     * @param string $deviceID
-     * @param string $filename
-     * @param boolean $isBinary
-     * @return boolean
+     * Uploads a sketch to the core. Requires the accessToken to be set
+     *
+     * @param string $deviceID The device ID of the device to upload the code to
+     * @param string $filename The filename of the firmware file to upload to the device. Ex: tinker.cpp. Not yet implemented
+     * @param string $filepath The path to the firmware file to upload (including the name). Ex: path/to/tinker.cpp
+     * @param boolean $isBinary Set to true if uploading a .bin file or false otherwise.
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
-    public function uploadFirmware($deviceID,$filename,$isBinary=false)
+    public function uploadFirmware($deviceID,$filename,$filepath,$isBinary=false)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
-            $params = array("file" => '@' . realpath($filename));
+            $params = array("file" => '@' . realpath($filepath));
             if($isBinary == true) 
                 $params['file_type'] = "binary";
             $result = $this->_curlRequest($url, $params, 'put-file');
@@ -281,26 +428,44 @@ class phpSpark
     }
     
     /**
-     * Gets a list of your tokens from the spark cloud
-     * @return boolean
+     * Gets a list of your tokens from the spark cloud. Requires the email/password auth to be set
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
     public function listTokens()
     {
             $url = $this->_endpoint .'v1/access_tokens';
-            $result = $this->_curlRequest($url, array(), 'get', 'basic', $this->_email, $this->_password);
+            $result = $this->_curlRequest($url, array(), 'get', 'basic');
             
             return $result;
     }
     
     /**
-     * Creates a new token on the spark cloud
-     * @param string $clientID
-     * @param string $clientSecret
-     * @return boolean
+     * Creates a new token on the spark cloud. Requires the email/password auth to be set
+     *
+     * @param int $expires_in When the token should expire (in seconds). Set to false to ignore and use the default. Set to 0 for a token that never expires
+     * @param string $expires_at When the token should expire (at a date/time). Set to false to ignore and use the default. Set to 'null' for a token that never expires. Otherwise this should be a ISO8601 style date string
+     * @param string $clientID The clientID. If you don't have one of these (only used in OAuth applications) set to false
+     * @param string $clientSecret The clientSecret. If you don't have one of these (only used in OAuth applications) set to false
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
-    public function getToken($clientID = "user", $clientSecret = "client_secret_here")
+    public function newAccessToken($expires_in = false, $expires_at = false, $clientID = false, $clientSecret = false)
     {
-        $fields = array('grant_type' => 'password', 'client_id' => $clientID, 'client_secret' => $clientSecret, 'username' => $this->_email, 'password' => $this->_password);
+        $fields = array('grant_type' => 'password', 'username' => $this->_email, 'password' => $this->_password);
+
+        if($expires_in !== false)
+            $fields['expires_in'] = intval($expires_in);
+
+        if($expires_at !== false)
+            $fields['expires_at'] = $expires_at;
+
+        if($clientID)
+        {
+            $fields['client_id'] = $clientID;
+            $fields['client_secret'] = $clientSecret;
+        }
+
         $url = $this->_endpoint .'oauth/token';
         $result = $this->_curlRequest($url, $fields, 'post', 'basic-dummy');
 
@@ -308,9 +473,11 @@ class phpSpark
     }
     
     /**
-     * Removes the token from the spark cloud
-     * @param string $token
-     * @return boolean
+     * Removes the token from the spark cloud. Requires the email/password auth to be set
+     *
+     * @param string $token The access token to remove
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
     public function deleteToken($token)
     {
@@ -319,9 +486,11 @@ class phpSpark
             
             return $result;
     }
+
     /**
-     * Gets a list of webhooks from the spark cloud
-     * @return boolean
+     * Gets a list of webhooks from the spark cloud. Requires the accessToken to be set
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
     public function listWebhooks()
     {
@@ -333,23 +502,28 @@ class phpSpark
     }
     
     /**
-     * Creates a new webhook on the spark cloud
-     * @param string $event
-     * @param string $url
-     * @param string $deviceID
-     * @return boolean
+     * Creates a new webhook on the spark cloud. Requires the accessToken to be set
+     * @param string $event The event name used to trigger the webhook
+     * @param string $webhookUrl The url to query once the event has occured
+     * @param string $extras See http://docs.spark.io/webhooks/#webhook-options
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
-    public function getWebhook($event, $url, $deviceID = NULL)
+    public function newWebhook($event, $webhookUrl, $extras = array())
     {
             $url = $this->_endpoint .'v1/webhooks/';
-            $result = $this->_curlRequest($url, array('event' => $event, 'url' => $url, 'deviceid' => $deviceID), 'post');
+
+            $fields = array_merge(array('event' => $event, 'url' => $webhookUrl),$extras);
+
+            $result = $this->_curlRequest($url, $fields , 'post');
             
             return $result;
     }
 
     /**
-     * Delete webhooks from the spark cloud
-     * @return boolean
+     * Delete webhooks from the spark cloud. Requires the accessToken to be set
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
     public function deleteWebhook($webhookID)
     {
@@ -361,10 +535,12 @@ class phpSpark
     }
     
     /**
-     * Sets the spark core signal mode state
-     * @param string $deviceID
-     * @param int $signalState
-     * @return boolean
+     * Sets the spark core signal mode state. Requires the accessToken to be set
+     *
+     * @param string $deviceID The device ID of the device to send the signal mode state change command to.
+     * @param int $signalState The signal state: 0 returns the RGB led back to normmal & 1 makes it flash a rainbow of color
+     *
+     * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
     public function signalDevice($deviceID, $signalState = 0)
     {
@@ -375,19 +551,46 @@ class phpSpark
             return $result;
     }
     
+    /**
+     * Returns the latest error
+     *
+     * @return string The latest error
+     */
     public function getError()
     {
         return $this->_error;
     }
+
+    /**
+     * Returns the latest error's source (which function cause the error)
+     *
+     * @return string The latest error's source
+     */
     public function getErrorSource()
     {
         return $this->_errorSource;
     }
+
+    /**
+     * Returns the latest result
+     *
+     * @return string The latest result from calling a cloud function
+     */
     public function getResult()
     {
         return $this->_result;
     }
     
+    /**
+     * Private Function. Performs a CURL Request with the given parameters
+     *
+     * @param string url The url to call
+     * @param mixed[] params An array of parameters to pass to the url
+     * @param string type The type of request ("GET", "POST", "PUT", etc)
+     * @param string authType The type of authorization to use ('none' uses the access token, 'basic' uses basic auth with the email/password auth details, and 'basic-dummy' uses dummy basic auth details)
+     *
+     * @return boolean true on success, false on failure
+     */
     private function _curlRequest($url, $params = null, $type = 'post', $authType = 'none')
     {
         
@@ -514,6 +717,7 @@ class phpSpark
         curl_close($ch);
         if($curlError != CURLE_OK)
         {
+            $this->_debug("CURL Request - There was a CURL error");
             list(, $caller) = debug_backtrace(false);
             //var_dump($caller['function']);
             $errorText = $this->_curlErrorCode($curlError);
@@ -522,42 +726,41 @@ class phpSpark
         }
         else
         {
-            if(isset($retVal['error']) && $retVal['error'])
-            {
-                $errorText = $retVal['error'];
-                $this->_setError($errorText, __FUNCTION__);
-                return false;
-            }
-            else
-            {
-                $retVal = json_decode($output,true);
+            $retVal = json_decode($output,true);
 
-                if(json_last_error() == 0)
+            if(json_last_error() == 0)
+            {
+                if(isset($retVal['error']) && $retVal['error'])
                 {
-                    if(isset($retVal['error']) && $retVal['error'])
-                    {
-                        $errorText = $retVal['error'];
-                        $this->_setError($errorText, __FUNCTION__);
-                        return false;
-                    }
-                    else
-                    {
-                        return $this->_result = $retVal;
-                        //return true;
-                    }
-                }
-                else
-                {
-                    $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                    $this->_debug("CURL Request - API response contained 'error' field");
+                    $errorText = $retVal['error'];
                     $this->_setError($errorText, __FUNCTION__);
                     return false;
                 }
-                return true;
+                else
+                {
+                    $this->_debug("CURL Request - Returning True");
+                    $this->_result = $retVal;
+                    return true;
+                }
             }
-            return $output;
+            else
+            {
+                $this->_debug("CURL Request - Unable to parse JSON");
+                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                $this->_setError($errorText, __FUNCTION__);
+                return false;
+            }
         }
     }
     
+    /**
+     * Private Function. Returns a human readable string for a given CURL Error Code
+     *
+     * @param int curlCode The CURL error code
+     *
+     * @return string A human-readable string version of the curlCode
+     */
     private function _curlErrorCode($curlCode)
     {
         switch ($curlCode)

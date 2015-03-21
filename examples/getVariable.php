@@ -1,7 +1,7 @@
 <?php
 /*
  * @project phpSpark
- * @file    examples/sparkVariable.php
+ * @file    examples/getVariable.php
  * @authors Harrison Jones (harrison@hhj.me)
  * @date    March 16, 2015
  * @brief   Examples file. Flash the code in phpSpark.firmware.cpp to your Spark Core and try these functions out

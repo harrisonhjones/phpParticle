@@ -1,7 +1,7 @@
 <?php
 /*
  * @project phpSpark
- * @file    examples/removeDevice.php
+ * @file    examples/deleteDevice.php
  * @authors Devin Pearson (devin@blackhat.co.za)
  * @date    March 18, 2015
  * @brief   Examples file.
@@ -27,7 +27,7 @@ $spark->setAccessToken($accessToken);
 
 // Remove the device from your account
 $spark->debug("Remove Device");
-if($spark->getDevice($deviceID) == true)
+if($spark->deleteDevice($deviceID) == true)
 {
     $spark->debug_r($spark->getResult());
 }

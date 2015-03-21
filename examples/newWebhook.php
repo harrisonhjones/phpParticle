@@ -1,9 +1,9 @@
 <?php
 /*
  * @project phpSpark
- * @file    examples/renameDevice.php
- * @authors Harrison Jones (harrison@hhj.me)
- * @date    March 16, 2015
+ * @file    examples/newWebhook.php
+ * @authors Devin Pearson (devin@blackhat.co.za)
+ * @date    March 18, 2015
  * @brief   Examples file.
  */
 
@@ -25,9 +25,26 @@ $spark->setDebugType("HTML");
 // Set our access token (set in the phpConfig.config.php file)
 $spark->setAccessToken($accessToken);
 
-// Rename your Spark Core
-$spark->debug("Spark Set Device Name");
-if($spark->setDeviceName($deviceID,uniqid('phpSpark_')) == true)
+// create spark webhook
+$spark->debug("Create Spark Web Hook");
+
+$extras = array();
+$extras['mydevices'] = true;
+$extras['deviceid'] = $deviceID;
+$extras['requestType'] = "POST";
+//$extras['headers'] = array("X-Device-ID"=>"test");
+//$extras["form"] = json_encode(array("form_name"=>"form_value"));      // Not implemented server side yet
+//$extras['json'] = array("json_key"=>"json_value");
+$extras['query'] = array("p1"=>"v1");
+$extras['auth'] = array("username"=>"test","password"=>"test_password");
+
+// headers & auth are mutually exclusive (can't have both at the same time or the call will fail on the cloud side)
+// json and query are mutually exclusive
+
+$fields = array_merge(array('event' => $event, 'url' => $url, 'deviceid' => $deviceID),$extras);
+print_r($fields);
+
+if($spark->newWebhook('test', 'http://google.com/',$extras) == true)
 {
     $spark->debug_r($spark->getResult());
 }
