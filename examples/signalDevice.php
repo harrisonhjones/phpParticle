@@ -1,9 +1,9 @@
 <?php
 /*
  * @project phpSpark
- * @file    examples/uploadFirmware.php
- * @authors Harrison Jones (harrison@hhj.me)
- * @date    March 16, 2015
+ * @file    examples/signalDevice.php
+ * @authors Devin Pearson (devin@blackhat.co.za)
+ * @date    March 19, 2015
  * @brief   Examples file.
  */
 
@@ -25,9 +25,9 @@ $spark->setDebugType("HTML");
 // Set our access token (set in the phpConfig.config.php file)
 $spark->setAccessToken($accessToken);
 
-// Upload firmware to your Spark Core
-$spark->debug("Spark Firmware Upload");
-if($spark->uploadFirmware($deviceID,"tinker.cpp",false) == true)
+// Signals the spark with a rainbow display using the rgb led
+$spark->debug("signal Spark Device");
+if($spark->signalDevice($deviceID,1) == true)
 {
     $spark->debug_r($spark->getResult());
 }

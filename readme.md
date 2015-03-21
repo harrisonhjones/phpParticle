@@ -23,7 +23,6 @@ See `phpSpark.examples.php`
 - Grab the value of a Spark Variable from a device
 - Generate a new access token
 - List your access tokens
-- Add an access token
 - Delete an access token
 - Use a local spark cloud
 - List Webhooks
@@ -32,3 +31,4 @@ See `phpSpark.examples.php`
 - Remote (Over the Air) Firmware Uploads
 - Claim core
 - Remove core
+- Device signaling

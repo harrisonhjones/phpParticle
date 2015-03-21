@@ -360,6 +360,21 @@ class phpSpark
             return $result;
     }
     
+    /**
+     * Sets the spark core signal mode state
+     * @param string $deviceID
+     * @param int $signalState
+     * @return boolean
+     */
+    public function signalDevice($deviceID, $signalState = 0)
+    {
+            $fields = array('signal' => $signalState);
+            $url = $this->_endpoint ."v1/devices/{$deviceID}/";
+            $result = $this->_curlRequest($url, $fields, 'put');
+            
+            return $result;
+    }
+    
     public function getError()
     {
         return $this->_error;
