@@ -58,7 +58,7 @@ class phpSpark
             return false;
         }
     }
-	
+    
     /**
      * Sets the authentication details for authenticating with the API
      *
@@ -418,13 +418,15 @@ class phpSpark
      */
     public function uploadFirmware($deviceID,$filename,$filepath,$isBinary=false)
     {
+            // Create a CURLFile object
+            $cfile = new CURLFile($filepath,'application/octet-stream',$filename);
+
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
-            $params = array("file" => '@' . realpath($filepath));
+            $params = array('file' => $cfile);
             if($isBinary == true) 
                 $params['file_type'] = "binary";
-            $result = $this->_curlRequest($url, $params, 'put-file');
-            
-            return $result;
+            $result = $this->_curlRequest($url, $params, 'put-file');  
+            return $result; 
     }
     
     /**
