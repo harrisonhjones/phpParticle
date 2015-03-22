@@ -27,7 +27,7 @@ $spark->setAccessToken($accessToken);
 
 // Grab a specific device's info
 $spark->debug("Spark Device Info");
-if($spark->getDeviceInfo($deviceID) == true)
+if($spark->getAttributes($deviceID) == true)
 {
     $spark->debug_r($spark->getResult());
 }

@@ -27,7 +27,7 @@ $spark->setAccessToken($accessToken);
 
 // Rename your Spark Core
 $spark->debug("Spark Set Device Name");
-if($spark->setDeviceName($deviceID,uniqid('phpSpark_')) == true)
+if($spark->renameDevice($deviceID,uniqid('phpSpark_')) == true)
 {
     $spark->debug_r($spark->getResult());
 }

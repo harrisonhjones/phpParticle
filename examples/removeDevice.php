@@ -27,7 +27,7 @@ $spark->setAccessToken($accessToken);
 
 // Remove the device from your account
 $spark->debug("Remove Device");
-if($spark->getDevice($deviceID) == true)
+if($spark->removeDevice($deviceID) == true)
 {
     $spark->debug_r($spark->getResult());
 }

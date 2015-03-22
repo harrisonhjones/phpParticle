@@ -175,7 +175,7 @@ class phpSpark
      * @param string $params
      * @return boolean
      */
-    public function doFunction($deviceID, $deviceFunction, $params)
+    public function callFunction($deviceID, $deviceFunction, $params)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction;
             $result =  $this->_curlRequest($url, array('args'=>$params), 'post');
@@ -214,7 +214,7 @@ class phpSpark
      * @param string $deviceID
      * @return boolean
      */
-    public function getDeviceInfo($deviceID)
+    public function getAttributes($deviceID)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
             $result = $this->_curlRequest($url, array(), 'get');
@@ -228,7 +228,7 @@ class phpSpark
      * @param string $name
      * @return boolean
      */
-    public function setDeviceName($deviceID,$name)
+    public function renameCore($deviceID,$name)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
             $result = $this->_curlRequest($url, array("name" => $name), 'put');
@@ -241,7 +241,7 @@ class phpSpark
      * @param string $deviceID
      * @return boolean
      */
-    public function getDevice($deviceID)
+    public function claimCore($deviceID)
     {
             $url = $this->_endpoint .'v1/devices';
             $result = $this->_curlRequest($url, array('deviceid' => $deviceID), 'post');
@@ -254,7 +254,7 @@ class phpSpark
      * @param string $deviceID
      * @return boolean
      */
-    public function deleteDevice($deviceID)
+    public function removeCore($deviceID)
     {
             $url = $this->_endpoint ."v1/devices/{$deviceID}/";
             $result = $this->_curlRequest($url, array(), 'delete');
@@ -269,7 +269,7 @@ class phpSpark
      * @param boolean $isBinary
      * @return boolean
      */
-    public function uploadFirmware($deviceID,$filename,$isBinary=false)
+    public function flashCore($deviceID,$filename,$isBinary=false)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
             $params = array("file" => '@' . realpath($filename));
@@ -284,7 +284,7 @@ class phpSpark
      * Gets a list of your tokens from the spark cloud
      * @return boolean
      */
-    public function listTokens()
+    public function listAccessTokens()
     {
             $url = $this->_endpoint .'v1/access_tokens';
             $result = $this->_curlRequest($url, array(), 'get', 'basic', $this->_email, $this->_password);
@@ -298,7 +298,7 @@ class phpSpark
      * @param string $clientSecret
      * @return boolean
      */
-    public function getToken($clientID = "user", $clientSecret = "client_secret_here")
+    public function createAccessToken($clientID = "user", $clientSecret = "client_secret_here")
     {
         $fields = array('grant_type' => 'password', 'client_id' => $clientID, 'client_secret' => $clientSecret, 'username' => $this->_email, 'password' => $this->_password);
         $url = $this->_endpoint .'oauth/token';
@@ -312,7 +312,7 @@ class phpSpark
      * @param string $token
      * @return boolean
      */
-    public function deleteToken($token)
+    public function deleteAccessToken($token)
     {
             $url = $this->_endpoint .'v1/access_tokens/'.$token;
             $result = $this->_curlRequest($url, array(), 'delete', 'basic');
@@ -339,7 +339,7 @@ class phpSpark
      * @param string $deviceID
      * @return boolean
      */
-    public function getWebhook($event, $url, $deviceID = NULL)
+    public function createWebhook($event, $url, $deviceID = NULL)
     {
             $url = $this->_endpoint .'v1/webhooks/';
             $result = $this->_curlRequest($url, array('event' => $event, 'url' => $url, 'deviceid' => $deviceID), 'post');

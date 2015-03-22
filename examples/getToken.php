@@ -25,7 +25,7 @@ $spark->setDebugType("HTML");
 // Create Spark core token
 $spark->debug("generate Token");
 $spark->setAuth($username, $password);
-if($spark->getToken() == true)
+if($spark->createAccessToken() == true)
 {
     $spark->debug_r($spark->getResult());
 }

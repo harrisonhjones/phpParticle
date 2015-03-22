@@ -27,7 +27,7 @@ $spark->setAccessToken($accessToken);
 
 // claim a device on your account
 $spark->debug("Claim Device");
-if($spark->getDevice($deviceID) == true)
+if($spark->claimDevice($deviceID) == true)
 {
     $spark->debug_r($spark->getResult());
 }

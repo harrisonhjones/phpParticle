@@ -30,7 +30,7 @@ $spark->setAccessToken($accessToken);
 
 // Turn on the D7 LED (requires Tinker to be on your Spark Core)
 $spark->debug("Spark Function");
-if($spark->doFunction($deviceID, "digitalwrite", "D7,HIGH") == true)
+if($spark->callFunction($deviceID, "digitalwrite", "D7,HIGH") == true)
 {
     $spark->debug_r($spark->getResult());
 }

@@ -27,7 +27,7 @@ $spark->setAccessToken($accessToken);
 
 // create spark webhook
 $spark->debug("Create Spark Web Hook");
-if($spark->getWebhook('test', 'http://google.com/') == true)
+if($spark->createWebhook('test', 'http://google.com/') == true)
 {
     $spark->debug_r($spark->getResult());
 }
