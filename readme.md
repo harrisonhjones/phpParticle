@@ -12,23 +12,37 @@ PHP Class for interacting with the Spark Cloud (spark.io)
 - (Optional) Run the any of the examples in the `examples` folder
 
 ## Usage
-See `phpSpark.examples.php`
+
+- Check out the examples in the `examples` folder
+- Try out the [phpSparkDashboard](https://github.com/harrisonhjones/phpSparkDashboard) project which uses this project ([demo](http://projects.harrisonhjones.com/phpSparkDashboard/))
 
 ## Implemented Features
 
+### Device Management
 - List Devices
 - Get device info 
 - Rename/Set device name
 - Call Spark Function on a device
 - Grab the value of a Spark Variable from a device
+- Remote (Over the Air) Firmware Uploads
+- Device signaling (make it flash a rainbow of colors)
+
+### Access Token Management
 - Generate a new access token
 - List your access tokens
 - Delete an access token
-- Use a local spark cloud
+
+### Webhook Management
+
 - List Webhooks
 - Add Webhook
 - Delete Webhook
-- Remote (Over the Air) Firmware Uploads
+
+### Account/Cloud Management
+- Use a local spark cloud
 - Claim core
 - Remove core
-- Device signaling
+
+## Not Yet Implemented Features
+- OAuth Client Creation (/v1/clients)
+- Advanced OAuth topics 

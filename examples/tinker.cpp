@@ -33,6 +33,7 @@ int tinkerAnalogRead(String pin);
 int tinkerAnalogWrite(String command);
 
 double upTime = 0;
+double firmwareVersion = 1;
 
 SYSTEM_MODE(AUTOMATIC);
 
@@ -48,8 +49,11 @@ void setup()
     Spark.function("analogread", tinkerAnalogRead);
     Spark.function("analogwrite", tinkerAnalogWrite);
         
-        // Register a Spark Variable as well
-        Spark.variable("uptime", &upTime, DOUBLE);
+    // Register a Spark Variable as well
+    Spark.variable("uptime", &upTime, DOUBLE);
+
+    // Register a Spark Variable for the firmware version
+    Spark.variable("firmwareVersion", &firmwareVersion, DOUBLE);
 
 }
 

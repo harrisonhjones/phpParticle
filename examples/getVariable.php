@@ -1,10 +1,10 @@
 <?php
 /*
  * @project phpSpark
- * @file    examples/getWebhook.php
- * @authors Devin Pearson (devin@blackhat.co.za)
- * @date    March 18, 2015
- * @brief   Examples file.
+ * @file    examples/getVariable.php
+ * @authors Harrison Jones (harrison@hhj.me)
+ * @date    March 16, 2015
+ * @brief   Examples file. Flash the code in phpSpark.firmware.cpp to your Spark Core and try these functions out
  */
 
 // For testing purposes we want to be as strict as possible
@@ -25,9 +25,9 @@ $spark->setDebugType("HTML");
 // Set our access token (set in the phpConfig.config.php file)
 $spark->setAccessToken($accessToken);
 
-// create spark webhook
-$spark->debug("Create Spark Web Hook");
-if($spark->createWebhook('test', 'http://google.com/') == true)
+// Grab the current uptime of your core (requires a modified version of tinker on your Spark Core)
+$spark->debug("Spark Variable");
+if($spark->getVariable($deviceID, "uptime") == true)
 {
     $spark->debug_r($spark->getResult());
 }

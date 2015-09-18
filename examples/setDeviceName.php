@@ -1,9 +1,9 @@
 <?php
 /*
  * @project phpSpark
- * @file    examples/removeDevice.php
- * @authors Devin Pearson (devin@blackhat.co.za)
- * @date    March 18, 2015
+ * @file    examples/setDeviceName.php
+ * @authors Harrison Jones (harrison@hhj.me)
+ * @date    March 16, 2015
  * @brief   Examples file.
  */
 
@@ -25,9 +25,9 @@ $spark->setDebugType("HTML");
 // Set our access token (set in the phpConfig.config.php file)
 $spark->setAccessToken($accessToken);
 
-// Remove the device from your account
-$spark->debug("Remove Device");
-if($spark->removeDevice($deviceID) == true)
+// Rename your Spark Core
+$spark->debug("Spark Set Device Name");
+if($spark->renameDevice($deviceID,uniqid('phpSpark_')) == true)
 {
     $spark->debug_r($spark->getResult());
 }

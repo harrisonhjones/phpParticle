@@ -27,7 +27,7 @@ $spark->setAccessToken($accessToken);
 
 // Upload firmware to your Spark Core
 $spark->debug("Spark Firmware Upload");
-if($spark->flashCore($deviceID,"tinker.cpp",false) == true)
+if($spark->uploadFirmware($deviceID,"tinker.bin","tinker.bin",false) == true)
 {
     $spark->debug_r($spark->getResult());
 }
