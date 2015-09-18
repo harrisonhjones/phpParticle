@@ -423,7 +423,7 @@ class ParticleAPI {
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
-    public function renameCore($deviceID,$name)
+    public function renameDevice($deviceID,$name)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
             $result = $this->_curlRequest($url, array("name" => $name), 'put');
