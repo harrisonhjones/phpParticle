@@ -760,7 +760,7 @@ class ParticleAPI {
         }
         if ($authType == 'basic-dummy') {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_USERPWD, "spark:spark");
+            curl_setopt($ch, CURLOPT_USERPWD, "particle:particle");
         }
         
         // Download the given URL, and return output
