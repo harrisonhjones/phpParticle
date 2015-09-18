@@ -1,9 +1,9 @@
 <?php
 /*
  * @project phpSpark
- * @file    examples/listTokens.php
- * @authors Harrison Jones (harrison@hhj.me)
- * @date    March 16, 2015
+ * @file    examples/getToken.php
+ * @authors Devin Pearson (devin@blackhat.co.za)
+ * @date    March 18, 2015
  * @brief   Examples file.
  */
 
@@ -22,10 +22,10 @@ $spark->setDebug(true);
 // Set the debug calls to display pretty HTML format. Other option is "TEXT". Note, calls made to $spark->debug(...) display as set here
 $spark->setDebugType("HTML");
 
-// List of Spark core tokens
-$spark->debug("Spark Tokens");
+// Create Spark core token
+$spark->debug("generate Token");
 $spark->setAuth($username, $password);
-if($spark->listAccessTokens() == true)
+if($spark->createAccessToken() == true)
 {
     $spark->debug_r($spark->getResult());
 }
