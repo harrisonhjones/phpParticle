@@ -1,0 +1,25 @@
+{
+    "name": "articfox1986/phpparticle",
+    "description": "A php package for working with the particle API",
+    "license": "MIT",
+    "keywords": ["particle","php"],
+    "authors": [
+        {
+            "name": "Devin Pearson",
+            "email": "devin@blackhat.co.za"
+        },
+		{
+            "name": "Harrison Jones",
+            "email": "harrison@hhj.me"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "4.0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "articfox1986\\phpparticle\\": "src"
+        }
+    }
+}
