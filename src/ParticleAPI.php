@@ -1,12 +1,12 @@
 <?php namespace articfox1986\phpparticle;
  
 /*
- * @project phpSpark
- * @file    phpSpark.class.php
+ * @project phpParticle
+ * @file    ParticleAPI.php
  * @authors Harrison Jones (harrison@hhj.me)
  *          Devin Pearson   (devin@blackhat.co.za)
  * @date    March 12, 2015
- * @brief   PHP Class for interacting with the Spark Cloud (spark.io)
+ * @brief   PHP Class for interacting with the Particle Cloud (particle.io)
  */
 class ParticleAPI {
 
@@ -23,16 +23,17 @@ class ParticleAPI {
     private $_curlTimeout = 10;
 	
 	/**
-     * Sets the api endpoint used. Default is the spark.io api
+     * Sets the api endpoint used. Default is the particle.io api
      *
-     * @param string $endpoint A url for the api you want to use (default: "https://api.spark.io/")
+     * @param string $endpoint A url for the api you want to use (default: "https://api.particle.io/")
      *
      * @return void
      *
      */
     public function setEndpoint($endpoint)
     {
-            $this->_endpoint = $endpoint;
+		$this->_endpoint = $endpoint;
+		return true;
     }
 	
 	/**
@@ -68,6 +69,15 @@ class ParticleAPI {
     }
     
     /**
+	 * Gets the CURL timeout
+	 * @return double
+	 */
+	public function getTimeout()
+	{
+		return $this->_curlTimeout;
+	}
+
+    /**
      * Sets the authentication details for authenticating with the API
      *
      * @param string $email The email to authenticate with
@@ -80,7 +90,26 @@ class ParticleAPI {
     {
         $this->_email = $email;
         $this->_password = $password;
+		return true;
     }
+
+    /**
+	 * Gets the auth email
+	 * @return string
+	 */
+	public function getEmail()
+	{
+		return $this->_email;
+	}
+
+    /**
+	 * Gets the auth password
+	 * @return string
+	 */
+	public function getPassword()
+	{
+		return $this->_password;
+	}
 
     /**
      * Clears all the authentication info (email and password). Internally set to false. Subsequent calls which require a email/password will fail
@@ -107,7 +136,16 @@ class ParticleAPI {
     }
 
     /**
-     * Clears the accesss token info. Internally set to false. Subsequent calls which require an access token will fail
+	 * Gets the Access Token
+	 * @return string
+	 */
+	public function getAccessToken()
+	{
+		return $this->_accessToken;
+	}
+
+    /**
+     * Clears the access token info. Internally set to false. Subsequent calls which require an access token will fail
      *
      * @return void
      *
@@ -140,6 +178,15 @@ class ParticleAPI {
     }
 
     /**
+	 * Gets the debug type
+	 * @return string
+	 */
+	public function getDebugType()
+	{
+		return $this->_debugType;
+	}
+
+    /**
      * Turn internal debugging on or off. Note, external calls made to debug ($obj->debug(...)) will always display regardless of this setting
      *
      * @param boolean $debug true turns on internal debugging & false turns off internal debugging
@@ -160,6 +207,15 @@ class ParticleAPI {
             return true;
         }
     }
+
+    /**
+	 * Gets whether debug is on or off
+	 * @return boolean
+	 */
+	public function getDebug()
+	{
+		return $this->_debug;
+	}
 
     /**
      * Turn on or off SSL verification (it's a CURL thing). For testing, before you get the certificates setup, you might need to disable SSL verificatioon. Note this is a security concern
@@ -183,6 +239,15 @@ class ParticleAPI {
         }
     }
     
+    /**
+	 * Gets the whether ssls are disabled
+	 * @return string
+	 */
+	public function getDisableSSL()
+	{
+		return $this->_disabledSSL;
+	}
+
     /**
      * Private Function. Sets the internal _error & _errorSource variables. Allow for tracking which function resulted in an error and what that error was
      *
@@ -303,7 +368,7 @@ class ParticleAPI {
     }
     
     /**
-     * Runs a spark function on the device. Requires the accessToken to be set
+     * Runs a particle function on the device. Requires the accessToken to be set
      *
      * @param string $deviceID The device ID of the device to call the function on
      * @param string $deviceFunction The name function to call
@@ -320,7 +385,7 @@ class ParticleAPI {
     }
     
     /**
-     * Gets the value of a spark variable. Requires the accessToken to be set
+     * Gets the value of a particle variable. Requires the accessToken to be set
      * 
      * @param string $deviceID The device ID of the device to call the function on
      * @param string $variableName The name of the variable to retrieve
@@ -439,7 +504,7 @@ class ParticleAPI {
     }
     
     /**
-     * Gets a list of your tokens from the spark cloud. Requires the email/password auth to be set
+     * Gets a list of your tokens from the particle cloud. Requires the email/password auth to be set
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
@@ -452,7 +517,7 @@ class ParticleAPI {
     }
     
     /**
-     * Creates a new token on the spark cloud. Requires the email/password auth to be set
+     * Creates a new token on the particle cloud. Requires the email/password auth to be set
      *
      * @param int $expires_in When the token should expire (in seconds). Set to false to ignore and use the default. Set to 0 for a token that never expires
      * @param string $expires_at When the token should expire (at a date/time). Set to false to ignore and use the default. Set to 'null' for a token that never expires. Otherwise this should be a ISO8601 style date string
@@ -485,7 +550,7 @@ class ParticleAPI {
     }
     
     /**
-     * Removes the token from the spark cloud. Requires the email/password auth to be set
+     * Removes the token from the particle cloud. Requires the email/password auth to be set
      *
      * @param string $token The access token to remove
      *
@@ -500,7 +565,7 @@ class ParticleAPI {
     }
 
     /**
-     * Gets a list of webhooks from the spark cloud. Requires the accessToken to be set
+     * Gets a list of webhooks from the particle cloud. Requires the accessToken to be set
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
@@ -514,10 +579,10 @@ class ParticleAPI {
     }
     
     /**
-     * Creates a new webhook on the spark cloud. Requires the accessToken to be set
+     * Creates a new webhook on the particle cloud. Requires the accessToken to be set
      * @param string $event The event name used to trigger the webhook
      * @param string $webhookUrl The url to query once the event has occured
-     * @param string $extras See http://docs.spark.io/webhooks/#webhook-options
+     * @param string $extras See http://docs.particle.io/webhooks/#webhook-options
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
@@ -533,7 +598,7 @@ class ParticleAPI {
     }
 
     /**
-     * Delete webhooks from the spark cloud. Requires the accessToken to be set
+     * Delete webhooks from the particle cloud. Requires the accessToken to be set
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
@@ -547,7 +612,7 @@ class ParticleAPI {
     }
     
     /**
-     * Sets the spark core signal mode state. Requires the accessToken to be set
+     * Sets the particle core signal mode state. Requires the accessToken to be set
      *
      * @param string $deviceID The device ID of the device to send the signal mode state change command to.
      * @param int $signalState The signal state: 0 returns the RGB led back to normmal & 1 makes it flash a rainbow of color
