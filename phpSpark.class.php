@@ -347,7 +347,7 @@ class phpSpark
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
-    public function getDeviceInfo($deviceID)
+    public function getAttributes($deviceID)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
             $result = $this->_curlRequest($url, array(), 'get');
@@ -363,7 +363,7 @@ class phpSpark
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
-    public function setDeviceName($deviceID,$name)
+    public function renameCore($deviceID,$name)
     {
             $url = $this->_endpoint .'v1/devices/' . $deviceID;
             $result = $this->_curlRequest($url, array("name" => $name), 'put');
@@ -379,6 +379,7 @@ class phpSpark
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
+
     public function claimDevice($deviceID, $requestTransfer = false)
     {
             $url = $this->_endpoint .'v1/devices';
@@ -398,7 +399,7 @@ class phpSpark
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
-    public function deleteDevice($deviceID)
+    public function removeDevice($deviceID)
     {
             $url = $this->_endpoint ."v1/devices/{$deviceID}/";
             $result = $this->_curlRequest($url, array(), 'delete');
@@ -434,7 +435,7 @@ class phpSpark
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
-    public function listTokens()
+    public function listAccessTokens()
     {
             $url = $this->_endpoint .'v1/access_tokens';
             $result = $this->_curlRequest($url, array(), 'get', 'basic');
@@ -452,6 +453,7 @@ class phpSpark
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
+
     public function newAccessToken($expires_in = false, $expires_at = false, $clientID = false, $clientSecret = false)
     {
         $fields = array('grant_type' => 'password', 'username' => $this->_email, 'password' => $this->_password);
@@ -481,7 +483,7 @@ class phpSpark
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
-    public function deleteToken($token)
+    public function deleteAccessToken($token)
     {
             $url = $this->_endpoint .'v1/access_tokens/'.$token;
             $result = $this->_curlRequest($url, array(), 'delete', 'basic');
