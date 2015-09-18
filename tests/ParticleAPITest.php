@@ -42,4 +42,52 @@ class ParticleAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('password',$particle->getPassword());
   }
   
+  public function test_clearing_auth()
+  {
+    $particle = new ParticleAPI;
+	$result = $particle->clearAuth();
+	
+	$this->assertEquals(true,$result);
+    $this->assertEquals(false, $particle->getEmail());
+    $this->assertEquals(false,$particle->getPassword());
+  }
+  
+  public function test_setting_access_token()
+  {
+    $particle = new ParticleAPI;
+	$result = $particle->setAccessToken('a5a7b2d620fa349c8e825f02a6513de6ca7baabb');
+	
+	$this->assertEquals(true,$result);
+    $this->assertEquals('a5a7b2d620fa349c8e825f02a6513de6ca7baabb',$particle->getAccessToken());
+  }
+  
+  public function test_clearing_access_token()
+  {
+    $particle = new ParticleAPI;
+	$result = $particle->clearAccessToken();
+	
+	$this->assertEquals(true,$result);
+    $this->assertEquals(false,$particle->getAccessToken());
+  }
+  
+  // add debugType
+  public function test_setting_debug_to_true()
+  {
+    $particle = new ParticleAPI;
+	$result = $particle->setDebug(true);
+	
+	$this->assertEquals(true,$result);
+    $this->assertEquals(true,$particle->getDebug());
+  }
+  
+  public function test_setting_disable_ssl_to_true()
+  {
+    $particle = new ParticleAPI;
+	$result = $particle->setDisableSSL(true);
+	
+	$this->assertEquals(true,$result);
+    $this->assertEquals(true,$particle->getDisableSSL());
+  }
+
+  
 }

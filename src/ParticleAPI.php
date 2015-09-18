@@ -120,6 +120,7 @@ class ParticleAPI {
     public function clearAuth()
     {
         $this->setAuth(false,false);
+		return true;
     }
 
     /**
@@ -133,6 +134,7 @@ class ParticleAPI {
     public function setAccessToken($accessToken)
     {
         $this->_accessToken = $accessToken;
+		return true;
     }
 
     /**
@@ -153,6 +155,7 @@ class ParticleAPI {
     public function clearAccessToken()
     {
         $this->setAccessToken(false);
+		return true;
     }
 
     /**
@@ -196,16 +199,8 @@ class ParticleAPI {
      */
     public function setDebug($debug = false)
     {
-        if($debug)
-        {
-            $this->_debug = true;
-            return true;
-        }
-        else
-        {
-            $this->_debug = false;
-            return true;
-        }
+        $this->_debug = ($debug) ? true : false;
+		return true;
     }
 
     /**
@@ -227,16 +222,8 @@ class ParticleAPI {
      */
     public function setDisableSSL($disableSSL = false)
     {
-        if($disableSSL)
-        {
-            $this->_disableSSL = true;
-            return true;
-        }
-        else
-        {
-            $this->_disableSSL = false;
-            return true;
-        }
+        $this->_disableSSL = ($disableSSL) ? true : false;
+		return true;
     }
     
     /**
@@ -245,7 +232,7 @@ class ParticleAPI {
 	 */
 	public function getDisableSSL()
 	{
-		return $this->_disabledSSL;
+		return $this->_disableSSL;
 	}
 
     /**
