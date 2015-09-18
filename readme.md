@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/articfox1986/phpParticle.svg?branch=master)](https://travis-ci.org/articfox1986/phpParticle)
+[![Coverage Status](https://coveralls.io/repos/articfox1986/phpParticle/badge.svg?branch=master&service=github)](https://coveralls.io/github/articfox1986/phpParticle?branch=master)
+
 phpSpark
 ========
 
