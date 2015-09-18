@@ -70,7 +70,25 @@ class ParticleAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(false,$particle->getAccessToken());
   }
   
-  // add debugType
+  public function test_setting_debug_type()
+  {
+    $particle = new ParticleAPI;
+	$result = $particle->setDebugType('TEXT');
+	
+	$this->assertEquals(true,$result);
+    $this->assertEquals('TEXT',$particle->getDebugType());
+  }
+  
+  public function test_setting_debug_type_invalid()
+  {
+    $particle = new ParticleAPI;
+	$result = $particle->setDebugType('SomethingStrange');
+	
+	$this->assertEquals(false,$result);
+	$this->assertContains('Bad debut type',$particle->getError());
+    $this->assertEquals('HTML',$particle->getDebugType());
+  }
+  
   public function test_setting_debug_to_true()
   {
     $particle = new ParticleAPI;
@@ -87,6 +105,14 @@ class ParticleAPITest extends PHPUnit_Framework_TestCase {
 	
 	$this->assertEquals(true,$result);
     $this->assertEquals(true,$particle->getDisableSSL());
+  }
+  
+  public function test_setting_debug_message()
+  {
+    $particle = new ParticleAPI;
+	$result = $particle->debug('debugging text');
+	
+	$this->assertEquals(true,$result);
   }
 
   
