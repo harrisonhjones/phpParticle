@@ -31,5 +31,15 @@ class ParticleAPITest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('Non numeric timeout',$particle->getError());
     $this->assertEquals('setTimeout',$particle->getErrorSource());
   }
- 
+	
+  public function test_setting_auth()
+  {
+    $particle = new ParticleAPI;
+	$result = $particle->setAuth('test@test.com','password');
+	
+	$this->assertEquals(true,$result);
+    $this->assertEquals('test@test.com',$particle->getEmail());
+    $this->assertEquals('password',$particle->getPassword());
+  }
+  
 }
