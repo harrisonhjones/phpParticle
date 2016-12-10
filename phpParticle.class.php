@@ -22,6 +22,7 @@ class phpParticle
     private $_debugType = "HTML";
     private $_endpoint = "https://api.particle.io/";
     private $_curlTimeout = 10;
+    private $_productSlug = "";
 
     /**
      * Sets the api endpoint used. Default is the particle.io api
@@ -96,6 +97,19 @@ class phpParticle
     public function setAccessToken($accessToken)
     {
         $this->_accessToken = $accessToken;
+    }
+
+    /**
+     * Sets the product slug for authenticating with the API
+     *
+     * @param string $accessToken The access token to authenticate with
+     *
+     * @return void
+     *
+     */
+    public function setProductSlug($productSlug)
+    {
+        $this->_productSlug = $productSlug;
     }
 
     /**
@@ -305,10 +319,12 @@ class phpParticle
      */
     public function callFunction($deviceID, $deviceFunction, $params)
     {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction;
-            $result =  $this->_curlRequest($url, array('args'=>$params), 'post');
-            
-            return $result;
+        if(empty($this->_productSlug)) {
+            $url = $this->_endpoint . 'v1/devices/' . $deviceID . '/' . $deviceFunction;
+        } else {
+            $url = $this->_endpoint . 'v1/products/' . $this->_productSlug . '/devices/' . $deviceID . '/' . $deviceFunction;
+        }
+        return $this->_curlRequest($url, array('args'=>$params), 'post');
     }
     
     /**
@@ -321,10 +337,12 @@ class phpParticle
      */
     public function getVariable($deviceID, $variableName)
     {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $variableName;
-            $result = $this->_curlRequest($url, array(), 'get');
-            
-            return $result;
+        if(empty($this->_productSlug)) {
+            $url = $this->_endpoint . 'v1/devices/' . $deviceID . '/' . $variableName;
+        } else {
+            $url = $this->_endpoint . 'v1/products/' . $this->_productSlug . '/devices/' . $deviceID . '/' . $variableName;
+        }
+        return $this->_curlRequest($url, array(), 'get');
     }
     
     /**
@@ -334,12 +352,14 @@ class phpParticle
      */
     public function listDevices()
     {
-            $url = $this->_endpoint .'v1/devices/';
-            $result = $this->_curlRequest($url, array(), 'get');
-
-            return $result;
+        if(empty($this->_productSlug)) {
+            $url = $this->_endpoint . 'v1/devices/';
+            return $this->_curlRequest($url, array(), 'get');
+        } else {
+            $url = $this->_endpoint . 'v1/products/' . $this->_productSlug . '/devices/';
+            return $this->_curlRequest($url, array(), 'get', 'none', 'devices');
+        }
     }
-
     /**
      * Gets your details from your core e.g. function and variables. Requires the accessToken to be set
      *
@@ -349,10 +369,12 @@ class phpParticle
      */
     public function getAttributes($deviceID)
     {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID;
-            $result = $this->_curlRequest($url, array(), 'get');
-            
-            return $result;
+        if(empty($this->_productSlug)) {
+            $url = $this->_endpoint . 'v1/devices/' . $deviceID;
+        } else {
+            $url = $this->_endpoint . 'v1/products/' . $this->_productSlug . '/devices/' . $deviceID;
+        }
+        return $this->_curlRequest($url, array(), 'get');
     }
     
     /**
@@ -365,10 +387,12 @@ class phpParticle
      */
     public function renameCore($deviceID,$name)
     {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID;
-            $result = $this->_curlRequest($url, array("name" => $name), 'put');
-            
-            return $result;
+        if(empty($this->_productSlug)) {
+            $url = $this->_endpoint . 'v1/devices/' . $deviceID;
+        } else {
+            $url = $this->_endpoint . 'v1/products/' . $this->_productSlug . '/devices/' . $deviceID;
+        }
+        return $this->_curlRequest($url, array("name" => $name), 'put');
     }
     
     /**
@@ -382,14 +406,17 @@ class phpParticle
 
     public function claimDevice($deviceID, $requestTransfer = false)
     {
-            $url = $this->_endpoint .'v1/devices';
-
-            if($requestTransfer)
-                $result = $this->_curlRequest($url, array('id' => $deviceID, 'request_transfer' => 'true'), 'post');
-            else
-                $result = $this->_curlRequest($url, array('id' => $deviceID, 'request_transfer' => 'false'), 'post');
-            
-            return $result;
+        if(empty($this->_productSlug)) {
+            $url = $this->_endpoint . 'v1/devices';
+        } else {
+            $url = $this->_endpoint . 'v1/products/' . $this->_productSlug . '/devices';
+        }
+        if($requestTransfer)
+            $result = $this->_curlRequest($url, array('id' => $deviceID, 'request_transfer' => 'true'), 'post');
+        else
+            $result = $this->_curlRequest($url, array('id' => $deviceID, 'request_transfer' => 'false'), 'post');
+        
+        return $result;
     }
     
     /**
@@ -401,10 +428,12 @@ class phpParticle
      */
     public function removeDevice($deviceID)
     {
-            $url = $this->_endpoint ."v1/devices/{$deviceID}/";
-            $result = $this->_curlRequest($url, array(), 'delete');
-            
-            return $result;
+        if(empty($this->_productSlug)) {
+            $url = $this->_endpoint . 'v1/devices/' . $deviceID;
+        } else {
+            $url = $this->_endpoint . 'v1/products/' . $this->_productSlug . '/devices/' . $deviceID;
+        }    
+        return $this->_curlRequest($url, array(), 'delete');
     }
 
     /**
@@ -419,15 +448,17 @@ class phpParticle
      */
     public function uploadFirmware($deviceID,$filename,$filepath,$isBinary=false)
     {
-            // Create a CURLFile object
-            $cfile = new CURLFile($filepath,'application/octet-stream',$filename);
-
-            $url = $this->_endpoint .'v1/devices/' . $deviceID;
-            $params = array('file' => $cfile);
-            if($isBinary == true) 
-                $params['file_type'] = "binary";
-            $result = $this->_curlRequest($url, $params, 'put-file');  
-            return $result; 
+        if(empty($this->_productSlug)) {
+            $url = $this->_endpoint . 'v1/devices/' . $deviceID;
+        } else {
+            $url = $this->_endpoint . 'v1/products/' . $this->_productSlug . '/devices/' . $deviceID;
+        }  
+        // Create a CURLFile object
+        $cfile = new CURLFile($filepath,'application/octet-stream',$filename);
+        $params = array('file' => $cfile);
+        if($isBinary == true) 
+            $params['file_type'] = "binary";
+        return $this->_curlRequest($url, $params, 'put-file');  
     }
     
     /**
@@ -485,10 +516,10 @@ class phpParticle
      */
     public function deleteAccessToken($token)
     {
-            $url = $this->_endpoint .'v1/access_tokens/'.$token;
-            $result = $this->_curlRequest($url, array(), 'delete', 'basic');
-            
-            return $result;
+        $url = $this->_endpoint .'v1/access_tokens/'.$token;
+        $result = $this->_curlRequest($url, array(), 'delete', 'basic');
+        
+        return $result;
     }
 
     /**
@@ -498,11 +529,11 @@ class phpParticle
      */
     public function listWebhooks()
     {
-            $fields = array();
-            $url = $this->_endpoint .'v1/webhooks';
-            $result = $this->_curlRequest($url, $fields, 'get');
-            
-            return $result;
+        $fields = array();
+        $url = $this->_endpoint .'v1/webhooks';
+        $result = $this->_curlRequest($url, $fields, 'get');
+        
+        return $result;
     }
     
     /**
@@ -515,13 +546,13 @@ class phpParticle
      */
     public function newWebhook($event, $webhookUrl, $extras = array())
     {
-            $url = $this->_endpoint .'v1/webhooks/';
+        $url = $this->_endpoint .'v1/webhooks/';
 
-            $fields = array_merge(array('event' => $event, 'url' => $webhookUrl),$extras);
+        $fields = array_merge(array('event' => $event, 'url' => $webhookUrl),$extras);
 
-            $result = $this->_curlRequest($url, $fields , 'post');
-            
-            return $result;
+        $result = $this->_curlRequest($url, $fields , 'post');
+        
+        return $result;
     }
 
     /**
@@ -531,11 +562,11 @@ class phpParticle
      */
     public function deleteWebhook($webhookID)
     {
-            $fields = array();
-            $url = $this->_endpoint ."v1/webhooks/{$webhookID}/";
-            $result = $this->_curlRequest($url, $fields, 'delete');
-            
-            return $result;
+        $fields = array();
+        $url = $this->_endpoint ."v1/webhooks/{$webhookID}/";
+        $result = $this->_curlRequest($url, $fields, 'delete');
+        
+        return $result;
     }
     
     /**
@@ -548,11 +579,13 @@ class phpParticle
      */
     public function signalDevice($deviceID, $signalState = 0)
     {
-            $fields = array('signal' => $signalState);
-            $url = $this->_endpoint ."v1/devices/{$deviceID}/";
-            $result = $this->_curlRequest($url, $fields, 'put');
-            
-            return $result;
+        if(empty($this->_productSlug)) {
+            $url = $this->_endpoint . 'v1/devices/' . $deviceID;
+        } else {
+            $url = $this->_endpoint . 'v1/products/' . $this->_productSlug . '/devices/' . $deviceID;
+        } 
+        $fields = array('signal' => $signalState);
+        return $this->_curlRequest($url, $fields, 'put');
     }
     
     /**
@@ -595,7 +628,7 @@ class phpParticle
      *
      * @return boolean true on success, false on failure
      */
-    private function _curlRequest($url, $params = null, $type = 'post', $authType = 'none')
+    private function _curlRequest($url, $params = null, $type = 'post', $authType = 'none', $key = false)
     {
         
         $fields_string = null;
@@ -744,7 +777,13 @@ class phpParticle
                 else
                 {
                     $this->_debug("CURL Request - Returning True");
-                    $this->_result = $retVal;
+                    if($key != false) {
+                        $this->_debug("CURL Request - Extracting from key '" . $key . "'");
+                        $this->_result = $retVal[$key];
+                    } else {
+                        $this->_result = $retVal;
+                    }
+                    
                     return true;
                 }
             }

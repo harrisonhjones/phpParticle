@@ -21,6 +21,7 @@ class ParticleAPI {
     private $_debugType = "HTML";
     private $_endpoint = "https://api.particle.io/";
     private $_curlTimeout = 10;
+    private $_productSlug = "";
 	
 	/**
      * Sets the api endpoint used. Default is the particle.io api
@@ -264,6 +265,29 @@ class ParticleAPI {
     }
 
     /**
+     * Set the product slug.
+     *
+     * @param string $productSlug The product slug to use.
+     *
+     * @return void
+     *
+     */
+    public function setProductSlug($productSlug)
+    {
+        $this->_productSlug = $productSlug;
+        return true;
+    }
+    
+    /**
+     * Gets the current product slug.
+     * @return string
+     */
+    public function getProductSlug()
+    {
+        return $this->_productSlug;
+    }
+
+    /**
      * Private Function. Outputs the desired debug text formatted if required
      *
      * @param string $debugText The debug string to output
@@ -365,10 +389,13 @@ class ParticleAPI {
      */
     public function callFunction($deviceID, $deviceFunction, $params)
     {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $deviceFunction;
-            $result =  $this->_curlRequest($url, array('args'=>$params), 'post');
-            
-            return $result;
+        $url = $this->_endpoint .'v1/';
+        if(empty($this->_productSlug)) {
+            $url .= 'devices/' . $deviceID . '/' . $deviceFunction;
+        } else {
+            $url .= 'products/' . $this->_productSlug . '/devices/' . $deviceID . '/' . $deviceFunction;
+        }
+        return $this->_curlRequest($url, array('args'=>$params), 'post');
     }
     
     /**
@@ -381,10 +408,13 @@ class ParticleAPI {
      */
     public function getVariable($deviceID, $variableName)
     {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID . '/' . $variableName;
-            $result = $this->_curlRequest($url, array(), 'get');
-            
-            return $result;
+        $url = $this->_endpoint .'v1/';
+        if(empty($this->_productSlug)) {
+            $url .= 'devices/' . $deviceID . '/' . $variableName;
+        } else {
+            $url .= 'products/' . $this->_productSlug . '/devices/' . $deviceID . '/' . $variableName;
+        }
+        return $this->_curlRequest($url, array(), 'get');
     }
     
     /**
@@ -394,10 +424,13 @@ class ParticleAPI {
      */
     public function listDevices()
     {
-            $url = $this->_endpoint .'v1/devices/';
-            $result = $this->_curlRequest($url, array(), 'get');
-
-            return $result;
+        $url = $this->_endpoint .'v1/';
+        if(empty($this->_productSlug)) {
+            $url .= 'devices/';
+        } else {
+            $url .= 'products/' . $this->_productSlug . '/devices/';
+        }
+        return $this->_curlRequest($url, array(), 'get');
     }
 
     /**
@@ -409,10 +442,13 @@ class ParticleAPI {
      */
     public function getAttributes($deviceID)
     {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID;
-            $result = $this->_curlRequest($url, array(), 'get');
-            
-            return $result;
+        $url = $this->_endpoint .'v1/';
+        if(empty($this->_productSlug)) {
+            $url .= 'devices/' . $deviceID;
+        } else {
+            $url .= 'products/' . $this->_productSlug . '/devices/' . $deviceID;
+        }
+        return $this->_curlRequest($url, array(), 'get');
     }
     
     /**
@@ -425,10 +461,13 @@ class ParticleAPI {
      */
     public function renameDevice($deviceID,$name)
     {
-            $url = $this->_endpoint .'v1/devices/' . $deviceID;
-            $result = $this->_curlRequest($url, array("name" => $name), 'put');
-            
-            return $result;
+        $url = $this->_endpoint .'v1/';
+        if(empty($this->_productSlug)) {
+            $url .= 'devices/' . $deviceID;
+        } else {
+            $url .= 'products/' . $this->_productSlug . '/devices/' . $deviceID;
+        }
+        return $this->_curlRequest($url, array("name" => $name), 'put');
     }
     
     /**
@@ -442,14 +481,18 @@ class ParticleAPI {
 
     public function claimDevice($deviceID, $requestTransfer = false)
     {
-            $url = $this->_endpoint .'v1/devices';
-
-            if($requestTransfer)
-                $result = $this->_curlRequest($url, array('id' => $deviceID, 'request_transfer' => 'true'), 'post');
-            else
-                $result = $this->_curlRequest($url, array('id' => $deviceID, 'request_transfer' => 'false'), 'post');
-            
-            return $result;
+        $url = $this->_endpoint .'v1/';
+        if(empty($this->_productSlug)) {
+            $url .= 'devices';
+        } else {
+            $url .= 'products/' . $this->_productSlug . '/devices';
+        }
+        if($requestTransfer)
+            $result = $this->_curlRequest($url, array('id' => $deviceID, 'request_transfer' => 'true'), 'post');
+        else
+            $result = $this->_curlRequest($url, array('id' => $deviceID, 'request_transfer' => 'false'), 'post');
+        
+        return $result;
     }
     
     /**
@@ -461,14 +504,17 @@ class ParticleAPI {
      */
     public function removeDevice($deviceID)
     {
-            $url = $this->_endpoint ."v1/devices/{$deviceID}/";
-            $result = $this->_curlRequest($url, array(), 'delete');
-            
-            return $result;
+        $url = $this->_endpoint .'v1/';
+        if(empty($this->_productSlug)) {
+            $url .= 'devices/' . $deviceID;
+        } else {
+            $url .= 'products/' . $this->_productSlug . '/devices/' . $deviceID;
+        }
+        return $this->_curlRequest($url, array(), 'delete');
     }
 
     /**
-     * Uploads a sketch to the core. Requires the accessToken to be set
+     * Uploads a sketch to a Particle device. Requires the accessToken to be set
      *
      * @param string $deviceID The device ID of the device to upload the code to
      * @param string $filename The filename of the firmware file to upload to the device. Ex: tinker.cpp. Not yet implemented
@@ -479,15 +525,21 @@ class ParticleAPI {
      */
     public function uploadFirmware($deviceID,$filename,$filepath,$isBinary=false)
     {
-            // Create a CURLFile object
-            $cfile = new CURLFile($filepath,'application/octet-stream',$filename);
+        // Create a CURLFile object
+        $cfile = new CURLFile($filepath,'application/octet-stream',$filename);
 
-            $url = $this->_endpoint .'v1/devices/' . $deviceID;
-            $params = array('file' => $cfile);
-            if($isBinary == true) 
-                $params['file_type'] = "binary";
-            $result = $this->_curlRequest($url, $params, 'put-file');  
-            return $result; 
+        $url = $this->_endpoint .'v1/';
+        if(empty($this->_productSlug)) {
+            $url .= 'devices/' . $deviceID;
+        } else {
+            $url .= 'products/' . $this->_productSlug . '/devices/' . $deviceID;
+        }
+
+        $params = array('file' => $cfile);
+        if($isBinary == true) 
+            $params['file_type'] = "binary";
+        $result = $this->_curlRequest($url, $params, 'put-file');  
+        return $result; 
     }
     
     /**
@@ -497,10 +549,8 @@ class ParticleAPI {
      */
     public function listAccessTokens()
     {
-            $url = $this->_endpoint .'v1/access_tokens';
-            $result = $this->_curlRequest($url, array(), 'get', 'basic');
-            
-            return $result;
+        $url = $this->_endpoint .'v1/access_tokens';
+        return $this->_curlRequest($url, array(), 'get', 'basic');
     }
     
     /**
@@ -558,11 +608,11 @@ class ParticleAPI {
      */
     public function listWebhooks()
     {
-            $fields = array();
-            $url = $this->_endpoint .'v1/webhooks';
-            $result = $this->_curlRequest($url, $fields, 'get');
-            
-            return $result;
+        $fields = array();
+        $url = $this->_endpoint .'v1/webhooks';
+        $result = $this->_curlRequest($url, $fields, 'get');
+        
+        return $result;
     }
     
     /**
@@ -575,13 +625,10 @@ class ParticleAPI {
      */
     public function newWebhook($event, $webhookUrl, $extras = array())
     {
-            $url = $this->_endpoint .'v1/webhooks/';
-
-            $fields = array_merge(array('event' => $event, 'url' => $webhookUrl),$extras);
-
-            $result = $this->_curlRequest($url, $fields , 'post');
-            
-            return $result;
+        $url = $this->_endpoint .'v1/webhooks/';
+        $fields = array_merge(array('event' => $event, 'url' => $webhookUrl),$extras);
+        $result = $this->_curlRequest($url, $fields , 'post');
+        return $result;
     }
 
     /**
@@ -608,11 +655,15 @@ class ParticleAPI {
      */
     public function signalDevice($deviceID, $signalState = 0)
     {
-            $fields = array('signal' => $signalState);
-            $url = $this->_endpoint ."v1/devices/{$deviceID}/";
-            $result = $this->_curlRequest($url, $fields, 'put');
-            
-            return $result;
+        $url = $this->_endpoint .'v1/';
+        if(empty($this->_productSlug)) {
+            $url .= 'devices/' . $deviceID;
+        } else {
+            $url .= 'products/' . $this->_productSlug . '/devices/' . $deviceID;
+        }
+        $fields = array('signal' => $signalState);
+        //$url = $this->_endpoint ."v1/devices/{$deviceID}/";
+        return $this->_curlRequest($url, $fields, 'put');
     }
     
     /**
