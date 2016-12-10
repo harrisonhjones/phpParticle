@@ -811,7 +811,7 @@ class ParticleAPI {
             else
             {
                 $this->_debug("CURL Request - Unable to parse JSON");
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Particle Cloud = '" . $result . "'";
                 $this->_setError($errorText, __FUNCTION__);
                 return false;
             }

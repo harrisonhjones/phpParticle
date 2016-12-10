@@ -7,10 +7,10 @@ class ParticleAPITest extends PHPUnit_Framework_TestCase {
   public function test_setting_endpoint()
   {
     $particle = new ParticleAPI;
-	$result = $particle->setEndpoint("https://api.spark.io/");
+	$result = $particle->setEndpoint("https://api.particle.io/");
 	
     $this->assertEquals(true,$result);
-	$this->assertEquals("https://api.spark.io/",$particle->getEndpoint());
+	$this->assertEquals("https://api.particle.io/",$particle->getEndpoint());
   }
   
   public function test_setting_timeout()

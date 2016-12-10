@@ -1,6 +1,6 @@
 <?php
 /*
- * @project phpSpark
+ * @project phpParticle
  * @file    examples/newAccessToken.php
  * @authors Harrison Jones (harrison@hhj.me)
  * @date    March 16, 2015
@@ -10,29 +10,29 @@
 // For testing purposes we want to be as strict as possible
 error_reporting(E_STRICT);
 
-// Include the required files. You will need to rename phpSpark.config.sample.php to phpSpark.config.php and then set the values within to use this example
-if((@include '../phpSpark.class.php') === false)  die("Unable to load phpSpark class");
-if((@include '../phpSpark.config.php') === false)  die("Unable to load phpSpark configuration file");
+// Include the required files. You will need to rename phpParticle.config.sample.php to phpParticle.config.php and then set the values within to use this example
+if((@include '../phpParticle.class.php') === false)  die("Unable to load phpParticle class");
+if((@include '../phpParticle.config.php') === false)  die("Unable to load phpParticle configuration file");
 
-// Grab a new instance of our phpSpark object
-$spark = new phpSpark();
+// Grab a new instance of our phpParticle object
+$particle = new phpParticle();
 
-// Set the internal debug to true. Note, calls made to $spark->debug(...) by you ignore this line and display always
-$spark->setDebug(true);
-// Set the debug calls to display pretty HTML format. Other option is "TEXT". Note, calls made to $spark->debug(...) display as set here
-$spark->setDebugType("HTML");
+// Set the internal debug to true. Note, calls made to $particle->debug(...) by you ignore this line and display always
+$particle->setDebug(true);
+// Set the debug calls to display pretty HTML format. Other option is "TEXT". Note, calls made to $particle->debug(...) display as set here
+$particle->setDebugType("HTML");
 
 // Delete a specific token
 $token = "EXAMPLE_TOKEN";
-$spark->debug("Delete Token " . $token);
-$spark->setAuth($username, $password);
-if($spark->deleteToken($token) == true)
+$particle->debug("Delete Token " . $token);
+$particle->setAuth($username, $password);
+if($particle->deleteToken($token) == true)
 {
-    $spark->debug_r($spark->getResult());
+    $particle->debug_r($particle->getResult());
 }
 else
 {
-    $spark->debug("Error: " . $spark->getError());
-    $spark->debug("Error Source" . $spark->getErrorSource());
+    $particle->debug("Error: " . $particle->getError());
+    $particle->debug("Error Source" . $particle->getErrorSource());
 }
 ?>

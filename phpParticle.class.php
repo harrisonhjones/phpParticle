@@ -1,15 +1,15 @@
 <?php
 
 /*
- * @project phpSpark
- * @file    phpSpark.class.php
+ * @project phpParticle
+ * @file    phpParticle.class.php
  * @authors Harrison Jones (harrison@hhj.me)
  *          Devin Pearson   (devin@blackhat.co.za)
  * @date    March 12, 2015
- * @brief   PHP Class for interacting with the Spark Cloud (spark.io)
+ * @brief   PHP Class for interacting with the Particle Cloud (particle.io)
  */
 
-class phpSpark
+class phpParticle
 {
     private $_email = false;
     private $_password = false;
@@ -20,13 +20,13 @@ class phpSpark
     private $_errorSource = "None";
     private $_result = false;
     private $_debugType = "HTML";
-    private $_endpoint = "https://api.spark.io/";
+    private $_endpoint = "https://api.particle.io/";
     private $_curlTimeout = 10;
 
     /**
-     * Sets the api endpoint used. Default is the spark.io api
+     * Sets the api endpoint used. Default is the particle.io api
      *
-     * @param string $endpoint A url for the api you want to use (default: "https://api.spark.io/")
+     * @param string $endpoint A url for the api you want to use (default: "https://api.particle.io/")
      *
      * @return void
      *
@@ -295,7 +295,7 @@ class phpSpark
     }
     
     /**
-     * Runs a spark function on the device. Requires the accessToken to be set
+     * Runs a particle function on the device. Requires the accessToken to be set
      *
      * @param string $deviceID The device ID of the device to call the function on
      * @param string $deviceFunction The name function to call
@@ -312,7 +312,7 @@ class phpSpark
     }
     
     /**
-     * Gets the value of a spark variable. Requires the accessToken to be set
+     * Gets the value of a particle variable. Requires the accessToken to be set
      * 
      * @param string $deviceID The device ID of the device to call the function on
      * @param string $variableName The name of the variable to retrieve
@@ -431,7 +431,7 @@ class phpSpark
     }
     
     /**
-     * Gets a list of your tokens from the spark cloud. Requires the email/password auth to be set
+     * Gets a list of your tokens from the particle cloud. Requires the email/password auth to be set
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
@@ -444,7 +444,7 @@ class phpSpark
     }
     
     /**
-     * Creates a new token on the spark cloud. Requires the email/password auth to be set
+     * Creates a new token on the particle cloud. Requires the email/password auth to be set
      *
      * @param int $expires_in When the token should expire (in seconds). Set to false to ignore and use the default. Set to 0 for a token that never expires
      * @param string $expires_at When the token should expire (at a date/time). Set to false to ignore and use the default. Set to 'null' for a token that never expires. Otherwise this should be a ISO8601 style date string
@@ -477,7 +477,7 @@ class phpSpark
     }
     
     /**
-     * Removes the token from the spark cloud. Requires the email/password auth to be set
+     * Removes the token from the particle cloud. Requires the email/password auth to be set
      *
      * @param string $token The access token to remove
      *
@@ -492,7 +492,7 @@ class phpSpark
     }
 
     /**
-     * Gets a list of webhooks from the spark cloud. Requires the accessToken to be set
+     * Gets a list of webhooks from the particle cloud. Requires the accessToken to be set
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
@@ -506,10 +506,10 @@ class phpSpark
     }
     
     /**
-     * Creates a new webhook on the spark cloud. Requires the accessToken to be set
+     * Creates a new webhook on the particle cloud. Requires the accessToken to be set
      * @param string $event The event name used to trigger the webhook
      * @param string $webhookUrl The url to query once the event has occured
-     * @param string $extras See http://docs.spark.io/webhooks/#webhook-options
+     * @param string $extras See http://docs.particle.io/webhooks/#webhook-options
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
@@ -525,7 +525,7 @@ class phpSpark
     }
 
     /**
-     * Delete webhooks from the spark cloud. Requires the accessToken to be set
+     * Delete webhooks from the particle cloud. Requires the accessToken to be set
      *
      * @return boolean true if the call was successful, false otherwise. Use getResult to get the api result and use getError & getErrorSource to determine what happened in the event of an error
      */
@@ -539,7 +539,7 @@ class phpSpark
     }
     
     /**
-     * Sets the spark core signal mode state. Requires the accessToken to be set
+     * Sets the particle core signal mode state. Requires the accessToken to be set
      *
      * @param string $deviceID The device ID of the device to send the signal mode state change command to.
      * @param int $signalState The signal state: 0 returns the RGB led back to normmal & 1 makes it flash a rainbow of color
@@ -700,7 +700,7 @@ class phpSpark
         }
         if ($authType == 'basic-dummy') {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_USERPWD, "spark:spark");
+            curl_setopt($ch, CURLOPT_USERPWD, "particle:particle");
         }
         
         // Download the given URL, and return output
@@ -751,7 +751,7 @@ class phpSpark
             else
             {
                 $this->_debug("CURL Request - Unable to parse JSON");
-                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Spark Cloud = '" . $result . "'";
+                $errorText = "Unable to parse JSON. Json error = " . json_last_error() . ". See http://php.net/manual/en/function.json-last-error.php for more information. Raw response from Particle Cloud = '" . $result . "'";
                 $this->_setError($errorText, __FUNCTION__);
                 return false;
             }

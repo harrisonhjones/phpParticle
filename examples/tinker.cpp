@@ -6,7 +6,7 @@
  * @date    05-November-2013
  * @brief   Tinker application
  ******************************************************************************
-  Copyright (c) 2013 Spark Labs, Inc.  All rights reserved.
+  Copyright (c) 2013 Particle Labs, Inc.  All rights reserved.
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -43,17 +43,17 @@ void setup()
     //Setup the Tinker application here
 
     //Register all the Tinker functions
-    Spark.function("digitalread", tinkerDigitalRead);
-    Spark.function("digitalwrite", tinkerDigitalWrite);
+    Particle.function("digitalread", tinkerDigitalRead);
+    Particle.function("digitalwrite", tinkerDigitalWrite);
 
-    Spark.function("analogread", tinkerAnalogRead);
-    Spark.function("analogwrite", tinkerAnalogWrite);
+    Particle.function("analogread", tinkerAnalogRead);
+    Particle.function("analogwrite", tinkerAnalogWrite);
         
-    // Register a Spark Variable as well
-    Spark.variable("uptime", &upTime, DOUBLE);
+    // Register a Particle Variable as well
+    Particle.variable("uptime", &upTime, DOUBLE);
 
-    // Register a Spark Variable for the firmware version
-    Spark.variable("firmwareVersion", &firmwareVersion, DOUBLE);
+    // Register a Particle Variable for the firmware version
+    Particle.variable("firmwareVersion", &firmwareVersion, DOUBLE);
 
 }
 

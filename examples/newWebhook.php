@@ -1,6 +1,6 @@
 <?php
 /*
- * @project phpSpark
+ * @project phpParticle
  * @file    examples/newWebhook.php
  * @authors Devin Pearson (devin@blackhat.co.za)
  * @date    March 18, 2015
@@ -10,23 +10,23 @@
 // For testing purposes we want to be as strict as possible
 error_reporting(E_STRICT);
 
-// Include the required files. You will need to rename phpSpark.config.sample.php to phpSpark.config.php and then set the values within to use this example
-if((@include '../phpSpark.class.php') === false)  die("Unable to load phpSpark class");
-if((@include '../phpSpark.config.php') === false)  die("Unable to load phpSpark configuration file");
+// Include the required files. You will need to rename phpParticle.config.sample.php to phpParticle.config.php and then set the values within to use this example
+if((@include '../phpParticle.class.php') === false)  die("Unable to load phpParticle class");
+if((@include '../phpParticle.config.php') === false)  die("Unable to load phpParticle configuration file");
 
-// Grab a new instance of our phpSpark object
-$spark = new phpSpark();
+// Grab a new instance of our phpParticle object
+$particle = new phpParticle();
 
-// Set the internal debug to true. Note, calls made to $spark->debug(...) by you ignore this line and display always
-$spark->setDebug(true);
-// Set the debug calls to display pretty HTML format. Other option is "TEXT". Note, calls made to $spark->debug(...) display as set here
-$spark->setDebugType("HTML");
+// Set the internal debug to true. Note, calls made to $particle->debug(...) by you ignore this line and display always
+$particle->setDebug(true);
+// Set the debug calls to display pretty HTML format. Other option is "TEXT". Note, calls made to $particle->debug(...) display as set here
+$particle->setDebugType("HTML");
 
 // Set our access token (set in the phpConfig.config.php file)
-$spark->setAccessToken($accessToken);
+$particle->setAccessToken($accessToken);
 
-// create spark webhook
-$spark->debug("Create Spark Web Hook");
+// create particle webhook
+$particle->debug("Create Particle Web Hook");
 
 $extras = array();
 $extras['mydevices'] = true;
@@ -44,13 +44,13 @@ $extras['auth'] = array("username"=>"test","password"=>"test_password");
 $fields = array_merge(array('event' => $event, 'url' => $url, 'deviceid' => $deviceID),$extras);
 print_r($fields);
 
-if($spark->newWebhook('test', 'http://google.com/',$extras) == true)
+if($particle->newWebhook('test', 'http://google.com/',$extras) == true)
 {
-    $spark->debug_r($spark->getResult());
+    $particle->debug_r($particle->getResult());
 }
 else
 {
-    $spark->debug("Error: " . $spark->getError());
-    $spark->debug("Error Source" . $spark->getErrorSource());
+    $particle->debug("Error: " . $particle->getError());
+    $particle->debug("Error Source" . $particle->getErrorSource());
 }
 ?>

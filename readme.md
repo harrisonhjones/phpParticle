@@ -8,15 +8,15 @@ PHP Class for interacting with the Particle Cloud (particle.io)
 ## Installation ##
 
 - GIT clone or download a zip of the repo and unzip into your project director
-- Rename `phpSpark.config.sample.php` to `phpSpark.config.php`
-- Set your access token and device id in `phpSpark.config.php`
-- (Optional) Copy and paste the code in `spark.firmware.cpp` into a new app in the Particle WebIDE & flash it to your core
+- Rename `phpParticle.config.sample.php` to `phpParticle.config.php`
+- Set your access token and device id in `phpParticle.config.php`
+- (Optional) Copy and paste the code in `particle.firmware.cpp` into a new app in the Particle WebIDE & flash it to your core
 - (Optional) Run the any of the examples in the `examples` folder
 
 ## Usage
 
 - Check out the examples in the `examples` folder
-- Try out the [phpSparkDashboard](https://github.com/harrisonhjones/phpSparkDashboard) project which uses this project ([demo](http://projects.harrisonhjones.com/phpSparkDashboard/))
+- Try out the [phpParticleDashboard](https://github.com/harrisonhjones/phpParticleDashboard) project which uses this project ([demo](http://projects.harrisonhjones.com/phpParticleDashboard/))
 
 ## Implemented Features
 

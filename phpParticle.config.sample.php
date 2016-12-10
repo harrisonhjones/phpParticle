@@ -1,11 +1,11 @@
 <?php
 
 /*
- * @project phpSpark
- * @file    phpSpark.config.php
+ * @project phpParticle
+ * @file    phpParticle.config.php
  * @authors Harrison Jones (harrison@hhj.me)
  * @date    March 12, 2015
- * @brief   Configuration File. Get your accessToken and device id from the spark webIDE (spark.io/build)
+ * @brief   Configuration File. Get your accessToken and device id from the particle webIDE (particle.io/build)
  */
 
 $accessToken = "ACCESS TOKEN GOES HERE";
